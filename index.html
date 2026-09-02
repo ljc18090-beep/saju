@@ -309,6 +309,11 @@
   .admin-settings-title{font-size:0.9rem; font-weight:700; margin-bottom:0.7rem; color:#332e24;}
   .admin-settings-label{display:flex; flex-direction:column; gap:0.35rem; font-size:0.82rem; font-weight:600; color:#443f33; margin-bottom:0.8rem;}
   .admin-settings-label input{padding:0.55rem 0.65rem; border:1px solid var(--paper-line); border-radius:4px; font-weight:400; font-size:0.88rem;}
+  .admin-settings-label textarea{padding:0.55rem 0.65rem; border:1px solid var(--paper-line); border-radius:4px; font-weight:400; font-size:0.88rem; font-family:inherit; resize:vertical;}
+  .content-group{border:1px solid var(--paper-line); border-radius:6px; margin-bottom:0.7rem; padding:0.1rem 0.9rem;}
+  .content-group summary{cursor:pointer; font-weight:700; padding:0.7rem 0; font-size:0.88rem; color:#332e24;}
+  .content-group[open] summary{border-bottom:1px solid var(--paper-line);}
+  .content-group .admin-settings-label{margin-top:0.7rem;}
   .lead-table-wrap{overflow-x:auto; max-height:52vh;}
   .lead-table{width:100%; border-collapse:collapse; font-size:0.82rem;}
   .lead-table th, .lead-table td{border-bottom:1px solid var(--paper-line); padding:0.5rem 0.6rem; text-align:left; white-space:nowrap;}
@@ -328,14 +333,14 @@
 
 <header class="nav">
   <div class="nav-inner">
-    <a href="#top" class="brand"><span class="brand-seal">結</span>결명당</a>
+    <a href="#top" class="brand"><span class="brand-seal">結</span><span id="navBrand">결명당</span></a>
     <nav class="nav-links">
-      <a href="#moments">이럴 때</a>
-      <a href="#expert">역술가 소개</a>
-      <a href="#reviews">후기</a>
-      <a href="#faq">FAQ</a>
+      <a href="#moments" id="navLink1">이럴 때</a>
+      <a href="#expert" id="navLink2">역술가 소개</a>
+      <a href="#reviews" id="navLink3">후기</a>
+      <a href="#faq" id="navLink4">FAQ</a>
     </nav>
-    <a href="#apply" class="btn btn-cta">신청하기</a>
+    <a href="#apply" class="btn btn-cta" id="navCta">신청하기</a>
   </div>
 </header>
 
@@ -343,12 +348,12 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <p class="eyebrow">사주단자 신청</p>
-      <h1>태어난 순간에 새겨진<br>여덟 글자를 풀어드립니다</h1>
-      <p class="hero-sub">생년월일시만 남겨주세요.<br>신청하시면 전문 역술가가 사주를 풀어드립니다.</p>
+      <p class="eyebrow" id="heroEyebrow">사주단자 신청</p>
+      <h1 id="heroTitle">태어난 순간에 새겨진<br>여덟 글자를 풀어드립니다</h1>
+      <p class="hero-sub" id="heroSub">생년월일시만 남겨주세요.<br>신청하시면 전문 역술가가 사주를 풀어드립니다.</p>
       <div class="hero-cta">
-        <a href="#apply" class="btn btn-primary">사주단자 작성하기</a>
-        <span class="hero-note">작성에 1분이면 충분합니다</span>
+        <a href="#apply" class="btn btn-primary" id="heroCta">사주단자 작성하기</a>
+        <span class="hero-note" id="heroNote">작성에 1분이면 충분합니다</span>
       </div>
 
       <div class="pillars" aria-hidden="true">
@@ -357,32 +362,32 @@
         <div class="pillar" style="--d:.3s"><span class="pillar-label">일주</span><span class="pillar-hanja">戊午</span><span class="pillar-mark"></span></div>
         <div class="pillar" style="--d:.45s"><span class="pillar-label">시주</span><span class="pillar-hanja">庚申</span><span class="pillar-mark"></span></div>
       </div>
-      <p class="pillars-caption">년주 · 월주 · 일주 · 시주 — 네 개의 기둥, 여덟 글자. 그것이 사주팔자(四柱八字)입니다</p>
+      <p class="pillars-caption" id="pillarsCaption">년주 · 월주 · 일주 · 시주 — 네 개의 기둥, 여덟 글자. 그것이 사주팔자(四柱八字)입니다</p>
     </div>
   </section>
 
   <section class="moments grain reveal" id="moments">
-    <h2>이런 순간, 사주가 방향을 알려줍니다</h2>
+    <h2 id="momentsTitle">이런 순간, 사주가 방향을 알려줍니다</h2>
     <div class="moment-grid">
       <div class="moment-card">
         <span class="moment-icon">緣</span>
-        <h3>인연과 연애</h3>
-        <p>지금 만나는 사람과의 궁합, 언제쯤 좋은 인연이 올지 궁금할 때</p>
+        <h3 id="moment1Title">인연과 연애</h3>
+        <p id="moment1Desc">지금 만나는 사람과의 궁합, 언제쯤 좋은 인연이 올지 궁금할 때</p>
       </div>
       <div class="moment-card">
         <span class="moment-icon">業</span>
-        <h3>이직과 사업</h3>
-        <p>퇴사와 창업, 계약 시점처럼 되돌리기 어려운 결정을 앞뒀을 때</p>
+        <h3 id="moment2Title">이직과 사업</h3>
+        <p id="moment2Desc">퇴사와 창업, 계약 시점처럼 되돌리기 어려운 결정을 앞뒀을 때</p>
       </div>
       <div class="moment-card">
         <span class="moment-icon">宅</span>
-        <h3>이사와 개업일</h3>
-        <p>이사 날짜, 개업일, 계약일처럼 날짜 하나가 마음에 걸릴 때</p>
+        <h3 id="moment3Title">이사와 개업일</h3>
+        <p id="moment3Desc">이사 날짜, 개업일, 계약일처럼 날짜 하나가 마음에 걸릴 때</p>
       </div>
       <div class="moment-card">
         <span class="moment-icon">路</span>
-        <h3>인생의 갈림길</h3>
-        <p>선택지는 많은데 무엇을 골라야 할지 스스로 확신이 서지 않을 때</p>
+        <h3 id="moment4Title">인생의 갈림길</h3>
+        <p id="moment4Desc">선택지는 많은데 무엇을 골라야 할지 스스로 확신이 서지 않을 때</p>
       </div>
     </div>
   </section>
@@ -391,12 +396,12 @@
     <div class="expert-inner">
       <div class="expert-photo"><span>素</span></div>
       <div class="expert-text">
-        <p class="eyebrow">역술가 소개</p>
-        <h2>결명당 대표 역술가 소경(素景)</h2>
-        <p>명리학과 자평명리를 오래 연구하며 상담을 이어온 결명당은, 화려한 말보다 근거 있는 풀이를 우선합니다. 사주팔자와 대운의 흐름을 함께 짚어드립니다.</p>
+        <p class="eyebrow" id="expertEyebrow">역술가 소개</p>
+        <h2 id="expertName">결명당 대표 역술가 소경(素景)</h2>
+        <p id="expertBio">명리학과 자평명리를 오래 연구하며 상담을 이어온 결명당은, 화려한 말보다 근거 있는 풀이를 우선합니다. 사주팔자와 대운의 흐름을 함께 짚어드립니다.</p>
         <ul class="expert-stats">
-          <li><strong>1,000+</strong><span>누적 상담</span></li>
-          <li><strong>당일 회신</strong><span>신청 후 연락</span></li>
+          <li><strong id="stat1Num">1,000+</strong><span id="stat1Label">누적 상담</span></li>
+          <li><strong id="stat2Num">당일 회신</strong><span id="stat2Label">신청 후 연락</span></li>
         </ul>
       </div>
     </div>
@@ -404,7 +409,7 @@
 
   <section class="character-video reveal">
     <div class="character-video-inner">
-      <video id="charVideo" autoplay muted loop playsinline>
+      <video id="charVideo" class="fade-video" autoplay muted loop playsinline preload="auto" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='9'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%232a241a'/><stop offset='100%25' stop-color='%23141210'/></linearGradient></defs><rect width='16' height='9' fill='url(%23g)'/></svg>">
         <source id="charVideoSource" src="" type="video/mp4">
       </video>
       <p class="video-placeholder" id="charVideoPlaceholder">캐릭터 영상을 준비 중입니다</p>
@@ -412,31 +417,31 @@
   </section>
 
   <section class="reviews reveal" id="reviews">
-    <h2>먼저 다녀가신 분들의 후기</h2>
+    <h2 id="reviewsTitle">먼저 다녀가신 분들의 후기</h2>
     <div class="review-grid">
       <article class="review-card">
         <span class="review-stamp">結</span>
-        <p>"이직 시점 때문에 반년을 고민했는데, 대운 흐름을 짚어주셔서 마음을 정했어요."</p>
-        <span class="review-name">30대 · 직장인</span>
+        <p id="review1Text">"이직 시점 때문에 반년을 고민했는데, 대운 흐름을 짚어주셔서 마음을 정했어요."</p>
+        <span class="review-name" id="review1Name">30대 · 직장인</span>
       </article>
       <article class="review-card">
         <span class="review-stamp">結</span>
-        <p>"태어난 시간을 몰라서 걱정했는데 일주만으로도 꽤 정확하게 봐주셨어요."</p>
-        <span class="review-name">20대 · 대학원생</span>
+        <p id="review2Text">"태어난 시간을 몰라서 걱정했는데 일주만으로도 꽤 정확하게 봐주셨어요."</p>
+        <span class="review-name" id="review2Name">20대 · 대학원생</span>
       </article>
       <article class="review-card">
         <span class="review-stamp">結</span>
-        <p>"개업일 잡을 때 상담받았는데, 설명이 구체적이라 믿음이 갔습니다."</p>
-        <span class="review-name">40대 · 자영업</span>
+        <p id="review3Text">"개업일 잡을 때 상담받았는데, 설명이 구체적이라 믿음이 갔습니다."</p>
+        <span class="review-name" id="review3Name">40대 · 자영업</span>
       </article>
     </div>
   </section>
 
   <section class="apply reveal" id="apply">
     <div class="apply-inner">
-      <p class="eyebrow">사주단자 작성</p>
-      <h2>사주단자(四柱單子)를 남겨주세요</h2>
-      <p class="apply-sub">예로부터 생년월일시를 적어 건네는 종이를 사주단자라 불렀습니다. 아래 정보를 남겨주시면 순서대로 연락드립니다.</p>
+      <p class="eyebrow" id="applyEyebrow">사주단자 작성</p>
+      <h2 id="applyTitle">사주단자(四柱單子)를 남겨주세요</h2>
+      <p class="apply-sub" id="applySub">예로부터 생년월일시를 적어 건네는 종이를 사주단자라 불렀습니다. 아래 정보를 남겨주시면 순서대로 연락드립니다.</p>
 
       <form id="leadForm" class="lead-form">
         <div class="form-row">
@@ -514,32 +519,32 @@
 
         <label class="agree">
           <input type="checkbox" required>
-          <span>(동의) 남겨주신 정보는 사주 상담 목적으로만 사용되며, 상담 종료 후 파기됩니다.</span>
+          <span id="agreeText">(동의) 남겨주신 정보는 사주 상담 목적으로만 사용되며, 상담 종료 후 파기됩니다.</span>
         </label>
 
-        <button type="submit" class="btn btn-primary btn-submit">사주단자 남기기</button>
+        <button type="submit" class="btn btn-primary btn-submit" id="submitBtnText">사주단자 남기기</button>
       </form>
     </div>
   </section>
 
   <section class="faq reveal" id="faq">
-    <h2>자주 묻는 질문</h2>
+    <h2 id="faqTitle">자주 묻는 질문</h2>
     <div class="faq-list">
       <details>
-        <summary>카카오톡 상담인가요, 대면 상담인가요?</summary>
-        <p>신청서 접수 후 담당 역술가가 먼저 카카오톡으로 연락드리며, 원하시면 대면 상담으로 이어갑니다.</p>
+        <summary id="faq1Q">카카오톡 상담인가요, 대면 상담인가요?</summary>
+        <p id="faq1A">신청서 접수 후 담당 역술가가 먼저 카카오톡으로 연락드리며, 원하시면 대면 상담으로 이어갑니다.</p>
       </details>
       <details>
-        <summary>태어난 시간을 정확히 몰라요.</summary>
-        <p>시간을 모르셔도 접수 가능합니다. "모름"을 선택해주세요. 년주·월주·일주만으로도 상당 부분 풀이가 가능합니다.</p>
+        <summary id="faq2Q">태어난 시간을 정확히 몰라요.</summary>
+        <p id="faq2A">시간을 모르셔도 접수 가능합니다. "모름"을 선택해주세요. 년주·월주·일주만으로도 상당 부분 풀이가 가능합니다.</p>
       </details>
       <details>
-        <summary>양력과 음력, 어떤 걸 입력해야 하나요?</summary>
-        <p>알고 계신 대로 입력하시면 됩니다. 담당자가 확인 후 정확히 환산해드립니다.</p>
+        <summary id="faq3Q">양력과 음력, 어떤 걸 입력해야 하나요?</summary>
+        <p id="faq3A">알고 계신 대로 입력하시면 됩니다. 담당자가 확인 후 정확히 환산해드립니다.</p>
       </details>
       <details>
-        <summary>상담 비용이 있나요?</summary>
-        <p>상담 비용은 상담 항목과 방식에 따라 달라지며, 접수 시 자세히 안내해드립니다.</p>
+        <summary id="faq4Q">상담 비용이 있나요?</summary>
+        <p id="faq4A">상담 비용은 상담 항목과 방식에 따라 달라지며, 접수 시 자세히 안내해드립니다.</p>
       </details>
     </div>
   </section>
@@ -547,8 +552,8 @@
 </main>
 
 <footer class="site-footer">
-  <p>결명당<span id="footerKakaoWrap"></span> · 평일 10:00–22:00</p>
-  <p class="footer-fine">신청서를 통해 수집된 정보는 상담 목적 외에 사용되지 않습니다.</p>
+  <p><span id="footerBrand">결명당</span><span id="footerKakaoWrap"></span> · <span id="footerHours">평일 10:00–22:00</span></p>
+  <p class="footer-fine" id="footerFine">신청서를 통해 수집된 정보는 상담 목적 외에 사용되지 않습니다.</p>
   <button id="adminOpen" class="admin-link">관리자</button>
 </footer>
 
@@ -586,6 +591,96 @@
       <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
     </div>
 
+    <p class="admin-settings-title">홈페이지 문구</p>
+
+    <details class="content-group">
+      <summary>상단 메뉴</summary>
+      <label class="admin-settings-label">로고 이름<input type="text" id="navBrandInput"></label>
+      <label class="admin-settings-label">메뉴1 (이런 순간)<input type="text" id="navLink1Input"></label>
+      <label class="admin-settings-label">메뉴2 (역술가 소개)<input type="text" id="navLink2Input"></label>
+      <label class="admin-settings-label">메뉴3 (후기)<input type="text" id="navLink3Input"></label>
+      <label class="admin-settings-label">메뉴4 (FAQ)<input type="text" id="navLink4Input"></label>
+      <label class="admin-settings-label">상단 버튼<input type="text" id="navCtaInput"></label>
+    </details>
+
+    <details class="content-group">
+      <summary>히어로 (첫 화면)</summary>
+      <label class="admin-settings-label">작은 라벨<input type="text" id="heroEyebrowInput"></label>
+      <label class="admin-settings-label">큰 제목 (줄바꿈은 Enter로)<textarea id="heroTitleInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">설명 문구 (줄바꿈은 Enter로)<textarea id="heroSubInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">버튼 문구<input type="text" id="heroCtaInput"></label>
+      <label class="admin-settings-label">버튼 아래 작은 문구<input type="text" id="heroNoteInput"></label>
+      <label class="admin-settings-label">사주팔자 설명 캡션<input type="text" id="pillarsCaptionInput"></label>
+    </details>
+
+    <details class="content-group">
+      <summary>이런 순간, 사주가 방향을 알려줍니다</summary>
+      <label class="admin-settings-label">섹션 제목<input type="text" id="momentsTitleInput"></label>
+      <label class="admin-settings-label">카드1 제목<input type="text" id="moment1TitleInput"></label>
+      <label class="admin-settings-label">카드1 설명<input type="text" id="moment1DescInput"></label>
+      <label class="admin-settings-label">카드2 제목<input type="text" id="moment2TitleInput"></label>
+      <label class="admin-settings-label">카드2 설명<input type="text" id="moment2DescInput"></label>
+      <label class="admin-settings-label">카드3 제목<input type="text" id="moment3TitleInput"></label>
+      <label class="admin-settings-label">카드3 설명<input type="text" id="moment3DescInput"></label>
+      <label class="admin-settings-label">카드4 제목<input type="text" id="moment4TitleInput"></label>
+      <label class="admin-settings-label">카드4 설명<input type="text" id="moment4DescInput"></label>
+    </details>
+
+    <details class="content-group">
+      <summary>역술가 소개</summary>
+      <label class="admin-settings-label">작은 라벨<input type="text" id="expertEyebrowInput"></label>
+      <label class="admin-settings-label">이름/직함<input type="text" id="expertNameInput"></label>
+      <label class="admin-settings-label">소개 문구<textarea id="expertBioInput" rows="3"></textarea></label>
+      <label class="admin-settings-label">통계1 숫자<input type="text" id="stat1NumInput"></label>
+      <label class="admin-settings-label">통계1 라벨<input type="text" id="stat1LabelInput"></label>
+      <label class="admin-settings-label">통계2 숫자<input type="text" id="stat2NumInput"></label>
+      <label class="admin-settings-label">통계2 라벨<input type="text" id="stat2LabelInput"></label>
+    </details>
+
+    <details class="content-group">
+      <summary>후기</summary>
+      <label class="admin-settings-label">섹션 제목<input type="text" id="reviewsTitleInput"></label>
+      <label class="admin-settings-label">후기1 내용<textarea id="review1TextInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">후기1 작성자<input type="text" id="review1NameInput"></label>
+      <label class="admin-settings-label">후기2 내용<textarea id="review2TextInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">후기2 작성자<input type="text" id="review2NameInput"></label>
+      <label class="admin-settings-label">후기3 내용<textarea id="review3TextInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">후기3 작성자<input type="text" id="review3NameInput"></label>
+    </details>
+
+    <details class="content-group">
+      <summary>사주단자 작성 (신청 폼 상단)</summary>
+      <label class="admin-settings-label">작은 라벨<input type="text" id="applyEyebrowInput"></label>
+      <label class="admin-settings-label">제목<input type="text" id="applyTitleInput"></label>
+      <label class="admin-settings-label">설명 문구<textarea id="applySubInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">개인정보 동의 문구<textarea id="agreeTextInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">제출 버튼 문구<input type="text" id="submitBtnTextInput"></label>
+    </details>
+
+    <details class="content-group">
+      <summary>FAQ</summary>
+      <label class="admin-settings-label">섹션 제목<input type="text" id="faqTitleInput"></label>
+      <label class="admin-settings-label">질문1<input type="text" id="faq1QInput"></label>
+      <label class="admin-settings-label">답변1<textarea id="faq1AInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">질문2<input type="text" id="faq2QInput"></label>
+      <label class="admin-settings-label">답변2<textarea id="faq2AInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">질문3<input type="text" id="faq3QInput"></label>
+      <label class="admin-settings-label">답변3<textarea id="faq3AInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">질문4<input type="text" id="faq4QInput"></label>
+      <label class="admin-settings-label">답변4<textarea id="faq4AInput" rows="2"></textarea></label>
+    </details>
+
+    <details class="content-group">
+      <summary>푸터 · 접수 완료 화면</summary>
+      <label class="admin-settings-label">푸터 상호명<input type="text" id="footerBrandInput"></label>
+      <label class="admin-settings-label">푸터 영업시간<input type="text" id="footerHoursInput"></label>
+      <label class="admin-settings-label">푸터 안내 문구<textarea id="footerFineInput" rows="2"></textarea></label>
+      <label class="admin-settings-label">접수 완료 제목<input type="text" id="successTitleInput"></label>
+      <label class="admin-settings-label">카카오 버튼 문구<input type="text" id="kakaoBtnLabelInput"></label>
+    </details>
+
+    <button id="saveContent" class="btn btn-secondary" style="margin-bottom:1.4rem;">문구 저장</button>
+
     <h3 style="margin-bottom:0.8rem;">접수된 사주단자 (<span id="leadCount">0</span>건)</h3>
     <div class="modal-actions">
       <button id="exportCsv" class="btn btn-secondary">CSV로 내보내기</button>
@@ -606,10 +701,10 @@
 <div id="successModal" class="modal-overlay hidden">
   <div class="modal modal-wide">
     <span class="success-seal">結</span>
-    <h3>사주단자가 접수되었습니다</h3>
+    <h3 id="successTitle">사주단자가 접수되었습니다</h3>
 
     <div class="result-video-wrap">
-      <video id="resultVideo" autoplay muted playsinline loop>
+      <video id="resultVideo" class="fade-video" autoplay muted playsinline loop preload="auto" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='9'><defs><linearGradient id='g2' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%232a241a'/><stop offset='100%25' stop-color='%23141210'/></linearGradient></defs><rect width='16' height='9' fill='url(%23g2)'/></svg>">
         <source id="resultVideoSource" src="" type="video/mp4">
       </video>
       <p class="video-placeholder" id="resultVideoPlaceholder">영상을 준비 중입니다</p>
@@ -668,6 +763,129 @@
   }
   // ================================================================
 
+  // ===== 홈페이지 문구 — Firestore의 settings/content 문서에서 불러옵니다 =====
+  var CONTENT_DOC = doc(db, 'settings', 'content');
+
+  var CONTENT_FIELDS = [
+    {key:'navBrand', el:'navBrand', input:'navBrandInput'},
+    {key:'navLink1', el:'navLink1', input:'navLink1Input'},
+    {key:'navLink2', el:'navLink2', input:'navLink2Input'},
+    {key:'navLink3', el:'navLink3', input:'navLink3Input'},
+    {key:'navLink4', el:'navLink4', input:'navLink4Input'},
+    {key:'navCta', el:'navCta', input:'navCtaInput'},
+    {key:'heroEyebrow', el:'heroEyebrow', input:'heroEyebrowInput'},
+    {key:'heroTitle', el:'heroTitle', input:'heroTitleInput', br:true},
+    {key:'heroSub', el:'heroSub', input:'heroSubInput', br:true},
+    {key:'heroCta', el:'heroCta', input:'heroCtaInput'},
+    {key:'heroNote', el:'heroNote', input:'heroNoteInput'},
+    {key:'pillarsCaption', el:'pillarsCaption', input:'pillarsCaptionInput'},
+    {key:'momentsTitle', el:'momentsTitle', input:'momentsTitleInput'},
+    {key:'moment1Title', el:'moment1Title', input:'moment1TitleInput'},
+    {key:'moment1Desc', el:'moment1Desc', input:'moment1DescInput'},
+    {key:'moment2Title', el:'moment2Title', input:'moment2TitleInput'},
+    {key:'moment2Desc', el:'moment2Desc', input:'moment2DescInput'},
+    {key:'moment3Title', el:'moment3Title', input:'moment3TitleInput'},
+    {key:'moment3Desc', el:'moment3Desc', input:'moment3DescInput'},
+    {key:'moment4Title', el:'moment4Title', input:'moment4TitleInput'},
+    {key:'moment4Desc', el:'moment4Desc', input:'moment4DescInput'},
+    {key:'expertEyebrow', el:'expertEyebrow', input:'expertEyebrowInput'},
+    {key:'expertName', el:'expertName', input:'expertNameInput'},
+    {key:'expertBio', el:'expertBio', input:'expertBioInput'},
+    {key:'stat1Num', el:'stat1Num', input:'stat1NumInput'},
+    {key:'stat1Label', el:'stat1Label', input:'stat1LabelInput'},
+    {key:'stat2Num', el:'stat2Num', input:'stat2NumInput'},
+    {key:'stat2Label', el:'stat2Label', input:'stat2LabelInput'},
+    {key:'reviewsTitle', el:'reviewsTitle', input:'reviewsTitleInput'},
+    {key:'review1Text', el:'review1Text', input:'review1TextInput'},
+    {key:'review1Name', el:'review1Name', input:'review1NameInput'},
+    {key:'review2Text', el:'review2Text', input:'review2TextInput'},
+    {key:'review2Name', el:'review2Name', input:'review2NameInput'},
+    {key:'review3Text', el:'review3Text', input:'review3TextInput'},
+    {key:'review3Name', el:'review3Name', input:'review3NameInput'},
+    {key:'applyEyebrow', el:'applyEyebrow', input:'applyEyebrowInput'},
+    {key:'applyTitle', el:'applyTitle', input:'applyTitleInput'},
+    {key:'applySub', el:'applySub', input:'applySubInput'},
+    {key:'agreeText', el:'agreeText', input:'agreeTextInput'},
+    {key:'submitBtnText', el:'submitBtnText', input:'submitBtnTextInput'},
+    {key:'faqTitle', el:'faqTitle', input:'faqTitleInput'},
+    {key:'faq1Q', el:'faq1Q', input:'faq1QInput'},
+    {key:'faq1A', el:'faq1A', input:'faq1AInput'},
+    {key:'faq2Q', el:'faq2Q', input:'faq2QInput'},
+    {key:'faq2A', el:'faq2A', input:'faq2AInput'},
+    {key:'faq3Q', el:'faq3Q', input:'faq3QInput'},
+    {key:'faq3A', el:'faq3A', input:'faq3AInput'},
+    {key:'faq4Q', el:'faq4Q', input:'faq4QInput'},
+    {key:'faq4A', el:'faq4A', input:'faq4AInput'},
+    {key:'footerBrand', el:'footerBrand', input:'footerBrandInput'},
+    {key:'footerHours', el:'footerHours', input:'footerHoursInput'},
+    {key:'footerFine', el:'footerFine', input:'footerFineInput'},
+    {key:'successTitle', el:'successTitle', input:'successTitleInput'},
+    {key:'kakaoBtnLabel', el:'kakaoLinkBtn', input:'kakaoBtnLabelInput'}
+  ];
+
+  var CONTENT = {
+    navBrand:'결명당', navLink1:'이럴 때', navLink2:'역술가 소개', navLink3:'후기', navLink4:'FAQ', navCta:'신청하기',
+    heroEyebrow:'사주단자 신청',
+    heroTitle:'태어난 순간에 새겨진\n여덟 글자를 풀어드립니다',
+    heroSub:'생년월일시만 남겨주세요.\n신청하시면 전문 역술가가 사주를 풀어드립니다.',
+    heroCta:'사주단자 작성하기', heroNote:'작성에 1분이면 충분합니다',
+    pillarsCaption:'년주 · 월주 · 일주 · 시주 — 네 개의 기둥, 여덟 글자. 그것이 사주팔자(四柱八字)입니다',
+    momentsTitle:'이런 순간, 사주가 방향을 알려줍니다',
+    moment1Title:'인연과 연애', moment1Desc:'지금 만나는 사람과의 궁합, 언제쯤 좋은 인연이 올지 궁금할 때',
+    moment2Title:'이직과 사업', moment2Desc:'퇴사와 창업, 계약 시점처럼 되돌리기 어려운 결정을 앞뒀을 때',
+    moment3Title:'이사와 개업일', moment3Desc:'이사 날짜, 개업일, 계약일처럼 날짜 하나가 마음에 걸릴 때',
+    moment4Title:'인생의 갈림길', moment4Desc:'선택지는 많은데 무엇을 골라야 할지 스스로 확신이 서지 않을 때',
+    expertEyebrow:'역술가 소개', expertName:'결명당 대표 역술가 소경(素景)',
+    expertBio:'명리학과 자평명리를 오래 연구하며 상담을 이어온 결명당은, 화려한 말보다 근거 있는 풀이를 우선합니다. 사주팔자와 대운의 흐름을 함께 짚어드립니다.',
+    stat1Num:'1,000+', stat1Label:'누적 상담', stat2Num:'당일 회신', stat2Label:'신청 후 연락',
+    reviewsTitle:'먼저 다녀가신 분들의 후기',
+    review1Text:'"이직 시점 때문에 반년을 고민했는데, 대운 흐름을 짚어주셔서 마음을 정했어요."', review1Name:'30대 · 직장인',
+    review2Text:'"태어난 시간을 몰라서 걱정했는데 일주만으로도 꽤 정확하게 봐주셨어요."', review2Name:'20대 · 대학원생',
+    review3Text:'"개업일 잡을 때 상담받았는데, 설명이 구체적이라 믿음이 갔습니다."', review3Name:'40대 · 자영업',
+    applyEyebrow:'사주단자 작성', applyTitle:'사주단자(四柱單子)를 남겨주세요',
+    applySub:'예로부터 생년월일시를 적어 건네는 종이를 사주단자라 불렀습니다. 아래 정보를 남겨주시면 순서대로 연락드립니다.',
+    agreeText:'(동의) 남겨주신 정보는 사주 상담 목적으로만 사용되며, 상담 종료 후 파기됩니다.',
+    submitBtnText:'사주단자 남기기',
+    faqTitle:'자주 묻는 질문',
+    faq1Q:'카카오톡 상담인가요, 대면 상담인가요?', faq1A:'신청서 접수 후 담당 역술가가 먼저 카카오톡으로 연락드리며, 원하시면 대면 상담으로 이어갑니다.',
+    faq2Q:'태어난 시간을 정확히 몰라요.', faq2A:'시간을 모르셔도 접수 가능합니다. "모름"을 선택해주세요. 년주·월주·일주만으로도 상당 부분 풀이가 가능합니다.',
+    faq3Q:'양력과 음력, 어떤 걸 입력해야 하나요?', faq3A:'알고 계신 대로 입력하시면 됩니다. 담당자가 확인 후 정확히 환산해드립니다.',
+    faq4Q:'상담 비용이 있나요?', faq4A:'상담 비용은 상담 항목과 방식에 따라 달라지며, 접수 시 자세히 안내해드립니다.',
+    footerBrand:'결명당', footerHours:'평일 10:00–22:00',
+    footerFine:'신청서를 통해 수집된 정보는 상담 목적 외에 사용되지 않습니다.',
+    successTitle:'사주단자가 접수되었습니다',
+    kakaoBtnLabel:'카카오톡으로 상담 이어가기'
+  };
+
+  function applyContent(){
+    CONTENT_FIELDS.forEach(function(f){
+      var el = document.getElementById(f.el);
+      if(!el) return;
+      var val = CONTENT[f.key] || '';
+      if(f.br){ el.innerHTML = escapeHtml(val).replace(/\n/g, '<br>'); }
+      else{ el.textContent = val; }
+    });
+  }
+
+  async function loadContent(){
+    try{
+      var snap = await getDoc(CONTENT_DOC);
+      if(snap.exists()){
+        var data = snap.data();
+        CONTENT_FIELDS.forEach(function(f){ if(data[f.key]) CONTENT[f.key] = data[f.key]; });
+      }
+    }catch(e){ console.error('문구 불러오기 실패', e); }
+    applyContent();
+  }
+
+  function populateContentInputs(){
+    CONTENT_FIELDS.forEach(function(f){
+      var input = document.getElementById(f.input);
+      if(input) input.value = CONTENT[f.key] || '';
+    });
+  }
+  // ================================================================
+
   // ---- reveal on scroll ----
   var revealEls = document.querySelectorAll('.reveal');
   if('IntersectionObserver' in window){
@@ -690,8 +908,12 @@
     url = normalizeVideoUrl(url);
     if(url){
       sourceEl.src = url;
+      videoEl.muted = true;
+      videoEl.playsInline = true;
       videoEl.load();
       if(placeholderEl) placeholderEl.style.display = 'none';
+      var playPromise = videoEl.play();
+      if(playPromise && playPromise.catch){ playPromise.catch(function(){ /* 자동재생 차단 브라우저 - 무시 */ }); }
     } else if(placeholderEl){
       placeholderEl.style.display = 'flex';
     }
@@ -783,6 +1005,7 @@
       document.getElementById('kakaoLinkInput').value = CONFIG.kakaoLink;
       document.getElementById('charVideoInput').value = CONFIG.charVideoUrl;
       document.getElementById('resultVideoInput').value = CONFIG.resultVideoUrl;
+      populateContentInputs();
       renderLeads();
     } else {
       alert('비밀번호가 올바르지 않습니다.');
@@ -890,7 +1113,30 @@
     setTimeout(function(){ btn.disabled = false; btn.textContent = original; }, 1200);
   });
 
+  document.getElementById('saveContent').addEventListener('click', async function(){
+    var btn = this;
+    var original = btn.textContent;
+    btn.disabled = true; btn.textContent = '저장 중...';
+    var newContent = {};
+    CONTENT_FIELDS.forEach(function(f){
+      var input = document.getElementById(f.input);
+      newContent[f.key] = input ? input.value : CONTENT[f.key];
+    });
+    try{
+      await setDoc(CONTENT_DOC, newContent, { merge: true });
+      CONTENT_FIELDS.forEach(function(f){ CONTENT[f.key] = newContent[f.key]; });
+      applyContent();
+      btn.textContent = '저장됨';
+    }catch(e){
+      console.error('문구 저장 실패', e);
+      alert('저장 중 문제가 발생했습니다. Firestore 규칙(settings 컬렉션 read/write)이 열려있는지 확인해주세요.');
+      btn.textContent = original;
+    }
+    setTimeout(function(){ btn.disabled = false; btn.textContent = original; }, 1200);
+  });
+
   loadConfig();
+  loadContent();
 </script>
 
 </body>
