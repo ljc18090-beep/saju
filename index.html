@@ -259,16 +259,32 @@
   .modal-wide .modal-actions{justify-content:flex-start; margin-bottom:1rem;}
   /* CHARACTER VIDEO */
   .character-video{max-width:var(--maxw); margin:0 auto; text-align:center;}
-  .character-video-inner{position:relative; border-radius:10px; overflow:hidden; background:#000; box-shadow:0 14px 34px rgba(21,18,13,0.16);}
+  .character-video-inner{position:relative; border-radius:10px; overflow:hidden; background:#000; box-shadow:0 14px 34px rgba(21,18,13,0.16); aspect-ratio:16/9;}
   .character-video-inner video{width:100%; display:block; aspect-ratio:16/9; object-fit:cover;}
   .video-placeholder{
     position:absolute; inset:0; display:none; align-items:center; justify-content:center;
     color:rgba(237,227,203,0.65); font-size:0.9rem; padding:1rem; text-align:center;
     background:linear-gradient(135deg,#2a241a,#141210);
   }
+  .fade-video{ opacity:0; transition:opacity .55s ease; }
+  .fade-video.is-ready{ opacity:1; }
+  .video-spinner{
+    position:absolute; inset:0; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#2a241a,#141210);
+    transition:opacity .4s ease;
+  }
+  .video-spinner.is-hidden{ opacity:0; pointer-events:none; }
+  .video-spinner .spin{
+    width:34px; height:34px; border-radius:50%;
+    border:3px solid rgba(224,196,106,0.22); border-top-color:var(--gold-soft);
+    animation:vidspin .85s linear infinite;
+  }
+  @keyframes vidspin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce){ .video-spinner .spin{ animation:none; } .fade-video{ transition:none; } }
 
   /* RESULT MODAL EXTRAS */
-  .result-video-wrap{position:relative; border-radius:8px; overflow:hidden; background:#000; margin:1.2rem 0;}
+  .result-video-wrap{position:relative; border-radius:8px; overflow:hidden; background:#000; margin:1.2rem 0; aspect-ratio:16/9;}
   .result-video-wrap video{width:100%; display:block; aspect-ratio:16/9; object-fit:cover;}
   .kakao-link-btn{
     display:flex; align-items:center; justify-content:center; gap:0.5rem;
@@ -409,8 +425,9 @@
 
   <section class="character-video reveal">
     <div class="character-video-inner">
+      <div class="video-spinner" id="charVideoSpinner"><span class="spin"></span></div>
       <video id="charVideo" class="fade-video" autoplay muted loop playsinline preload="auto" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='9'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%232a241a'/><stop offset='100%25' stop-color='%23141210'/></linearGradient></defs><rect width='16' height='9' fill='url(%23g)'/></svg>">
-        <source id="charVideoSource" src="" type="video/mp4">
+        <source id="charVideoSource" src="/character.mp4" type="video/mp4">
       </video>
       <p class="video-placeholder" id="charVideoPlaceholder">캐릭터 영상을 준비 중입니다</p>
     </div>
@@ -704,8 +721,9 @@
     <h3 id="successTitle">사주단자가 접수되었습니다</h3>
 
     <div class="result-video-wrap">
+      <div class="video-spinner" id="resultVideoSpinner"><span class="spin"></span></div>
       <video id="resultVideo" class="fade-video" autoplay muted playsinline loop preload="auto" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='9'><defs><linearGradient id='g2' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%232a241a'/><stop offset='100%25' stop-color='%23141210'/></linearGradient></defs><rect width='16' height='9' fill='url(%23g2)'/></svg>">
-        <source id="resultVideoSource" src="" type="video/mp4">
+        <source id="resultVideoSource" src="/result.mp4" type="video/mp4">
       </video>
       <p class="video-placeholder" id="resultVideoPlaceholder">영상을 준비 중입니다</p>
     </div>
@@ -759,7 +777,7 @@
   function applyPublicConfig(){
     document.getElementById('footerKakaoWrap').textContent =
       CONFIG.kakaoId ? (' · 상담 문의 카카오톡 ' + CONFIG.kakaoId) : '';
-    applyVideoSrc(document.getElementById('charVideo'), document.getElementById('charVideoSource'), document.getElementById('charVideoPlaceholder'), CONFIG.charVideoUrl);
+    applyVideoSrc(document.getElementById('charVideo'), document.getElementById('charVideoSource'), document.getElementById('charVideoPlaceholder'), CONFIG.charVideoUrl, document.getElementById('charVideoSpinner'));
   }
   // ================================================================
 
@@ -904,26 +922,58 @@
     return '/' + url;
   }
 
-  function applyVideoSrc(videoEl, sourceEl, placeholderEl, url){
+  function applyVideoSrc(videoEl, sourceEl, placeholderEl, url, spinnerEl){
     url = normalizeVideoUrl(url);
     if(url){
+      if(sourceEl.getAttribute('src') === url){
+        // 이미 같은 영상이 로딩/재생 중 — 다시 로드하지 않고 재생만 보장
+        videoEl.muted = true; videoEl.playsInline = true;
+        var alreadyPlaying = videoEl.play();
+        if(alreadyPlaying && alreadyPlaying.catch){ alreadyPlaying.catch(function(){}); }
+        return;
+      }
       sourceEl.src = url;
       videoEl.muted = true;
       videoEl.playsInline = true;
+      videoEl.classList.remove('is-ready');
+      if(spinnerEl) spinnerEl.classList.remove('is-hidden');
       videoEl.load();
       if(placeholderEl) placeholderEl.style.display = 'none';
       var playPromise = videoEl.play();
       if(playPromise && playPromise.catch){ playPromise.catch(function(){ /* 자동재생 차단 브라우저 - 무시 */ }); }
     } else if(placeholderEl){
       placeholderEl.style.display = 'flex';
+      if(spinnerEl) spinnerEl.classList.add('is-hidden');
     }
   }
+
+  // 영상이 실제로 재생 가능해지면 스피너를 감추고 부드럽게 페이드인, 너무 오래 걸리거나
+  // 실패하면(잘못된 경로 등) 자리표시 문구를 대신 보여줍니다 — 검은 화면으로 멈춰 보이지 않도록.
+  function wireVideoLoading(videoEl, spinnerEl, placeholderEl, timeoutMs){
+    var settled = false;
+    function markReady(){
+      if(settled) return; settled = true;
+      videoEl.classList.add('is-ready');
+      if(spinnerEl) spinnerEl.classList.add('is-hidden');
+    }
+    function markFailed(){
+      if(settled) return; settled = true;
+      if(spinnerEl) spinnerEl.classList.add('is-hidden');
+      if(placeholderEl) placeholderEl.style.display = 'flex';
+    }
+    videoEl.addEventListener('loadeddata', markReady);
+    videoEl.addEventListener('playing', markReady);
+    videoEl.addEventListener('error', markFailed);
+    setTimeout(function(){ if(!settled) markFailed(); }, timeoutMs || 9000);
+  }
+  wireVideoLoading(document.getElementById('charVideo'), document.getElementById('charVideoSpinner'), document.getElementById('charVideoPlaceholder'), 9000);
+  wireVideoLoading(document.getElementById('resultVideo'), document.getElementById('resultVideoSpinner'), document.getElementById('resultVideoPlaceholder'), 9000);
 
   // ---- 푸터 카카오/캐릭터 영상은 loadConfig()가 채웁니다 (아래에서 호출) ----
 
   // ---- 신청 완료 모달: 결과 영상 / 카카오 링크 준비 ----
   function prepareResultModal(){
-    applyVideoSrc(document.getElementById('resultVideo'), document.getElementById('resultVideoSource'), document.getElementById('resultVideoPlaceholder'), CONFIG.resultVideoUrl);
+    applyVideoSrc(document.getElementById('resultVideo'), document.getElementById('resultVideoSource'), document.getElementById('resultVideoPlaceholder'), CONFIG.resultVideoUrl, document.getElementById('resultVideoSpinner'));
 
     var kakaoBtn = document.getElementById('kakaoLinkBtn');
     if(CONFIG.kakaoLink){ kakaoBtn.href = CONFIG.kakaoLink; kakaoBtn.style.display = ''; }
