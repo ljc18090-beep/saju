@@ -549,7 +549,62 @@
 <footer class="site-footer">
   <p>결명당<span id="footerKakaoWrap"></span> · 평일 10:00–22:00</p>
   <p class="footer-fine">신청서를 통해 수집된 정보는 상담 목적 외에 사용되지 않습니다.</p>
+  <button id="adminOpen" class="admin-link">관리자</button>
 </footer>
+
+<div id="adminGate" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>관리자 확인</h3>
+    <input type="password" id="adminPw" placeholder="비밀번호">
+    <div class="modal-actions">
+      <button id="adminCancel" class="btn btn-ghost">취소</button>
+      <button id="adminSubmit" class="btn btn-primary">확인</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminPanel" class="modal-overlay hidden">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h3>관리자</h3>
+      <button id="adminClose" class="btn btn-ghost">닫기</button>
+    </div>
+    <div class="admin-settings">
+      <p class="admin-settings-title">사이트 설정</p>
+      <label class="admin-settings-label">카카오톡 상담 아이디 (하단 문의처에 표시)
+        <input type="text" id="kakaoIdInput" placeholder="카카오톡 아이디">
+      </label>
+      <label class="admin-settings-label">카카오톡 오픈채팅 링크 (접수 완료 화면 버튼)
+        <input type="url" id="kakaoLinkInput" placeholder="https://open.kakao.com/o/xxxxxxx">
+      </label>
+      <label class="admin-settings-label">캐릭터 소개 영상 URL (통계-후기 사이 섹션)
+        <input type="url" id="charVideoInput" placeholder="영상 파일 URL (mp4)">
+      </label>
+      <label class="admin-settings-label">신청 완료 후 재생 영상 URL
+        <input type="url" id="resultVideoInput" placeholder="영상 파일 URL (mp4)">
+      </label>
+      <label class="admin-settings-label">입금 계좌 정보
+        <input type="text" id="depositInput" placeholder="예: 국민은행 123456-78-901234 홍길동">
+      </label>
+      <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
+    </div>
+
+    <h3 style="margin-bottom:0.8rem;">접수된 사주단자 (<span id="leadCount">0</span>건)</h3>
+    <div class="modal-actions">
+      <button id="exportCsv" class="btn btn-secondary">CSV로 내보내기</button>
+      <button id="clearAll" class="btn btn-danger">전체 삭제</button>
+    </div>
+    <div class="lead-table-wrap">
+      <table class="lead-table" id="leadTable">
+        <thead><tr>
+          <th>접수일시</th><th>이름</th><th>연락처</th><th>성별</th><th>생년월일</th><th>시간</th><th>궁금한 것</th><th>메모</th><th></th>
+        </tr></thead>
+        <tbody id="leadTbody"></tbody>
+      </table>
+      <p class="empty-note" id="emptyNote" style="display:none;">아직 접수된 사주단자가 없습니다.</p>
+    </div>
+  </div>
+</div>
 
 <div id="successModal" class="modal-overlay hidden">
   <div class="modal modal-wide">
@@ -580,7 +635,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   // ===== Firebase 설정 =====
   var firebaseConfig = {
@@ -593,15 +649,39 @@
   };
   var firebaseApp = initializeApp(firebaseConfig);
   var db = getFirestore(firebaseApp);
+  var auth = getAuth(firebaseApp);
+  var ADMIN_EMAIL = 'admin@gyeolmyeongdang.com'; // Firebase 콘솔 Authentication에서 이 이메일로 사용자를 만들어주세요
 
-  // ===== 사이트 설정 — 값이 바뀔 때마다 이 부분만 직접 수정하세요 =====
+  // ===== 사이트 설정 — Firestore의 settings/site 문서에서 불러옵니다 (관리자 페이지에서 수정) =====
+  var SETTINGS_DOC = doc(db, 'settings', 'site');
   var CONFIG = {
-    kakaoId: '',        // 카카오톡 상담 아이디 (푸터에 표시). 비워두면 표시 안 됨
-    kakaoLink: '',       // 카카오톡 오픈채팅 링크 (접수 완료 화면 버튼). 비워두면 버튼 숨김. 예: https://open.kakao.com/o/xxxxxxx
-    charVideoUrl: '',    // 캐릭터 소개 영상 mp4 URL (통계-후기 사이 섹션)
-    resultVideoUrl: '',  // 신청 완료 후 재생되는 영상 mp4 URL
-    depositAccount: ''   // 입금 계좌 정보. 예: 국민은행 123456-78-901234 홍길동
+    kakaoId: '',
+    kakaoLink: '',
+    charVideoUrl: '',
+    resultVideoUrl: '',
+    depositAccount: ''
   };
+
+  async function loadConfig(){
+    try{
+      var snap = await getDoc(SETTINGS_DOC);
+      if(snap.exists()){
+        var data = snap.data();
+        CONFIG.kakaoId = data.kakaoId || '';
+        CONFIG.kakaoLink = data.kakaoLink || '';
+        CONFIG.charVideoUrl = data.charVideoUrl || '';
+        CONFIG.resultVideoUrl = data.resultVideoUrl || '';
+        CONFIG.depositAccount = data.depositAccount || '';
+      }
+    }catch(e){ console.error('설정 불러오기 실패', e); }
+    applyPublicConfig();
+  }
+
+  function applyPublicConfig(){
+    document.getElementById('footerKakaoWrap').textContent =
+      CONFIG.kakaoId ? (' · 상담 문의 카카오톡 ' + CONFIG.kakaoId) : '';
+    applyVideoSrc(document.getElementById('charVideo'), document.getElementById('charVideoSource'), document.getElementById('charVideoPlaceholder'), CONFIG.charVideoUrl);
+  }
   // ================================================================
 
   // ---- reveal on scroll ----
@@ -625,12 +705,7 @@
     }
   }
 
-  // ---- 푸터의 카카오톡 상담 아이디 ----
-  document.getElementById('footerKakaoWrap').textContent =
-    CONFIG.kakaoId ? (' · 상담 문의 카카오톡 ' + CONFIG.kakaoId) : '';
-
-  // ---- 캐릭터 소개 영상 (통계-후기 사이) ----
-  applyVideoSrc(document.getElementById('charVideo'), document.getElementById('charVideoSource'), document.getElementById('charVideoPlaceholder'), CONFIG.charVideoUrl);
+  // ---- 푸터 카카오/캐릭터 영상은 loadConfig()가 채웁니다 (아래에서 호출) ----
 
   // ---- 신청 완료 모달: 결과 영상 / 카카오 링크 / 입금 계좌 준비 ----
   function prepareResultModal(){
@@ -712,6 +787,140 @@
     }
     setTimeout(function(){ btn.textContent = original; }, 1500);
   });
+
+  // ---- admin gate ----
+  document.getElementById('adminOpen').addEventListener('click', function(){
+    document.getElementById('adminPw').value = '';
+    openModal('adminGate');
+  });
+  document.getElementById('adminCancel').addEventListener('click', function(){ closeModal('adminGate'); });
+  document.getElementById('adminSubmit').addEventListener('click', checkAdminPw);
+  document.getElementById('adminPw').addEventListener('keydown', function(e){ if(e.key==='Enter') checkAdminPw(); });
+
+  async function checkAdminPw(){
+    var val = document.getElementById('adminPw').value;
+    var submitBtn = document.getElementById('adminSubmit');
+    submitBtn.disabled = true;
+    try{
+      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, val);
+      closeModal('adminGate');
+      openModal('adminPanel');
+      document.getElementById('kakaoIdInput').value = CONFIG.kakaoId;
+      document.getElementById('kakaoLinkInput').value = CONFIG.kakaoLink;
+      document.getElementById('charVideoInput').value = CONFIG.charVideoUrl;
+      document.getElementById('resultVideoInput').value = CONFIG.resultVideoUrl;
+      document.getElementById('depositInput').value = CONFIG.depositAccount;
+      await renderLeads();
+    }catch(e){
+      alert('비밀번호가 올바르지 않습니다.');
+    }
+    submitBtn.disabled = false;
+  }
+  document.getElementById('adminClose').addEventListener('click', function(){ closeModal('adminPanel'); });
+
+  var currentLeads = [];
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  async function renderLeads(){
+    var tbody = document.getElementById('leadTbody');
+    var emptyNote = document.getElementById('emptyNote');
+    tbody.innerHTML = '<tr><td colspan="9" style="color:#8a8272;">불러오는 중...</td></tr>';
+    emptyNote.style.display = 'none';
+    try{
+      var q = query(collection(db, 'leads'), orderBy('submittedAt', 'desc'));
+      var snap = await getDocs(q);
+      currentLeads = [];
+      snap.forEach(function(d){ currentLeads.push(Object.assign({ id: d.id }, d.data())); });
+      tbody.innerHTML = '';
+      document.getElementById('leadCount').textContent = currentLeads.length;
+      emptyNote.style.display = currentLeads.length ? 'none' : 'block';
+      currentLeads.forEach(function(lead){
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>'+escapeHtml(lead.submittedAtText||'')+'</td>'+
+          '<td>'+escapeHtml(lead.name||'')+'</td>'+
+          '<td>'+escapeHtml(lead.contact||'')+'</td>'+
+          '<td>'+escapeHtml(lead.gender||'')+'</td>'+
+          '<td>'+escapeHtml(lead.calendar||'')+' '+escapeHtml(lead.birthdate||'')+'</td>'+
+          '<td>'+escapeHtml(lead.birthtime||'')+'</td>'+
+          '<td>'+escapeHtml(lead.topic||'')+'</td>'+
+          '<td>'+escapeHtml(lead.memo||'')+'</td>'+
+          '<td><button class="row-del" data-id="'+lead.id+'">삭제</button></td>';
+        tbody.appendChild(tr);
+      });
+      tbody.querySelectorAll('.row-del').forEach(function(btn){
+        btn.addEventListener('click', async function(){
+          var id = btn.getAttribute('data-id');
+          btn.disabled = true; btn.textContent = '삭제 중...';
+          try{ await deleteDoc(doc(db, 'leads', id)); await renderLeads(); }
+          catch(e){ alert('삭제 중 문제가 발생했습니다.'); btn.disabled = false; btn.textContent = '삭제'; }
+        });
+      });
+    }catch(e){
+      console.error('리드 불러오기 실패', e);
+      tbody.innerHTML = '<tr><td colspan="9" style="color:#8a8272;">불러오기 실패 — Firestore 규칙(leads read 권한)을 확인해주세요.</td></tr>';
+    }
+  }
+
+  document.getElementById('clearAll').addEventListener('click', async function(){
+    if(confirm('접수된 사주단자를 모두 삭제할까요? 되돌릴 수 없습니다.')){
+      for(var i=0;i<currentLeads.length;i++){
+        try{ await deleteDoc(doc(db, 'leads', currentLeads[i].id)); }catch(e){}
+      }
+      await renderLeads();
+    }
+  });
+
+  document.getElementById('exportCsv').addEventListener('click', function(){
+    if(!currentLeads.length){ alert('내보낼 데이터가 없습니다.'); return; }
+    var headers = ['접수일시','이름','연락처','성별','달력','생년월일','태어난시간','궁금한것','메모'];
+    var rows = currentLeads.map(function(l){
+      return [l.submittedAtText,l.name,l.contact,l.gender,l.calendar,l.birthdate,l.birthtime,l.topic,l.memo]
+        .map(function(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }).join(',');
+    });
+    var csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = '결명당_사주단자_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('saveSettings').addEventListener('click', async function(){
+    var btn = this;
+    var original = btn.textContent;
+    btn.disabled = true; btn.textContent = '저장 중...';
+    var newConfig = {
+      kakaoId: document.getElementById('kakaoIdInput').value.trim(),
+      kakaoLink: document.getElementById('kakaoLinkInput').value.trim(),
+      charVideoUrl: document.getElementById('charVideoInput').value.trim(),
+      resultVideoUrl: document.getElementById('resultVideoInput').value.trim(),
+      depositAccount: document.getElementById('depositInput').value.trim()
+    };
+    try{
+      await setDoc(SETTINGS_DOC, newConfig, { merge: true });
+      CONFIG.kakaoId = newConfig.kakaoId;
+      CONFIG.kakaoLink = newConfig.kakaoLink;
+      CONFIG.charVideoUrl = newConfig.charVideoUrl;
+      CONFIG.resultVideoUrl = newConfig.resultVideoUrl;
+      CONFIG.depositAccount = newConfig.depositAccount;
+      applyPublicConfig();
+      btn.textContent = '저장됨';
+    }catch(e){
+      console.error('설정 저장 실패', e);
+      alert('저장 중 문제가 발생했습니다. Firestore 규칙(settings 컬렉션 read/write)이 열려있는지 확인해주세요.');
+      btn.textContent = original;
+    }
+    setTimeout(function(){ btn.disabled = false; btn.textContent = original; }, 1200);
+  });
+
+  loadConfig();
 </script>
 
 </body>
