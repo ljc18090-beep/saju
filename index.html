@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>결명당 | 사주단자 무료 신청</title>
+<meta name="description" content="생년월일시만 남기면 전문 역술가가 사주를 풀어드립니다. 지금 사주단자를 신청하세요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15120d;
+    --ink-soft:#211c15;
+    --ink-line:rgba(237,227,203,0.14);
+    --paper:#f2e9d6;
+    --paper-dim:#e6d9bb;
+    --paper-line:rgba(21,18,13,0.13);
+    --cinnabar:#a8371d;
+    --cinnabar-deep:#7c2814;
+    --gold:#c69a2e;
+    --gold-soft:#e0c46a;
+    --jade:#2c5f55;
+    --ivory:#ede3cb;
+    --ink-text:#211c15;
+    --font-display:'Noto Serif KR', serif;
+    --font-body:'Noto Sans KR', sans-serif;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink-text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); margin:0; color:inherit;}
+  p{margin:0;}
+  a{color:inherit; text-decoration:none;}
+  ul{margin:0; padding:0; list-style:none;}
+  button, input, select, textarea{font-family:inherit; font-size:1rem;}
+  .eyebrow{
+    font-size:0.8rem; letter-spacing:0.18em; font-weight:600;
+    color:var(--cinnabar); text-transform:uppercase; margin-bottom:0.6rem; display:block;
+  }
+  section{padding: clamp(3.5rem,7vw,6.5rem) 1.4rem;}
+  .grain{position:relative;}
+  .grain::after{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:0.4rem;
+    padding:0.85rem 1.6rem; border-radius:3px; border:1px solid transparent;
+    font-weight:600; font-size:0.98rem; cursor:pointer; transition:transform .15s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--cinnabar); color:var(--ivory);}
+  .btn-primary:hover{background:var(--cinnabar-deep);}
+  .btn-secondary{background:transparent; border-color:var(--ink-text); color:var(--ink-text);}
+  .btn-secondary:hover{background:var(--ink-text); color:var(--paper);}
+  .btn-ghost{background:transparent; color:inherit; border-color:var(--ink-line);}
+  .btn-danger{background:transparent; color:var(--cinnabar); border-color:var(--cinnabar);}
+  .btn-cta{background:var(--gold); color:var(--ink);}
+  .btn-cta:hover{background:var(--gold-soft);}
+  :focus-visible{outline:2px solid var(--cinnabar); outline-offset:2px;}
+
+  /* NAV */
+  .nav{
+    position:sticky; top:0; z-index:40;
+    background:rgba(21,18,13,0.94); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--ink-line);
+  }
+  .nav-inner{
+    max-width:var(--maxw); margin:0 auto; padding:0.85rem 1.4rem;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .brand{display:flex; align-items:center; gap:0.55rem; font-family:var(--font-display); font-weight:700; font-size:1.15rem; color:var(--ivory);}
+  .brand-seal{
+    width:1.7rem; height:1.7rem; border-radius:3px; background:var(--cinnabar); color:var(--ivory);
+    display:inline-flex; align-items:center; justify-content:center; font-size:1rem; font-weight:700;
+  }
+  .nav-links{display:flex; gap:1.4rem; font-size:0.92rem; color:var(--ivory);}
+  .nav-links a{opacity:0.82;}
+  .nav-links a:hover{opacity:1;}
+  @media (max-width:720px){ .nav-links{display:none;} }
+
+  /* HERO */
+  .hero{
+    position:relative; background:radial-gradient(120% 90% at 50% -10%, #241f18 0%, var(--ink) 55%, #0f0d0a 100%);
+    color:var(--ivory); text-align:center; padding-top:clamp(4rem,10vw,7rem); padding-bottom:clamp(3rem,8vw,5rem);
+    overflow:hidden;
+  }
+  .hero-inner{max-width:760px; margin:0 auto; position:relative; z-index:2;}
+  .hero h1{
+    font-size:clamp(1.9rem,4.6vw,3.1rem); font-weight:700; line-height:1.35; letter-spacing:-0.01em;
+    margin-bottom:1.1rem;
+  }
+  .hero-sub{font-size:clamp(0.98rem,1.6vw,1.1rem); color:var(--paper-dim); margin-bottom:2rem;}
+  .hero-cta{display:flex; flex-direction:column; align-items:center; gap:0.6rem; margin-bottom:3.2rem;}
+  .hero-note{font-size:0.82rem; color:rgba(237,227,203,0.6);}
+  .hero-cta .btn-primary{padding:1rem 2.2rem; font-size:1.02rem; box-shadow:0 8px 24px rgba(168,55,29,0.35);}
+
+  .pillars{
+    display:flex; justify-content:center; gap:clamp(0.6rem,2vw,1.3rem); margin:0 auto 1rem;
+    max-width:640px; overflow-x:auto; padding:0.5rem 0.2rem;
+  }
+  .pillar{
+    flex:0 0 auto; width:clamp(64px,16vw,86px);
+    background:linear-gradient(180deg,#3c3325,#262016);
+    border:1px solid rgba(198,154,46,0.35);
+    border-radius:10px 10px 4px 4px;
+    padding:0.9rem 0.4rem 0.7rem;
+    display:flex; flex-direction:column; align-items:center; gap:0.55rem;
+    opacity:0; transform:translateY(14px);
+    animation:riseIn .7s ease forwards; animation-delay:var(--d,0s);
+  }
+  .pillar-label{font-size:0.72rem; letter-spacing:0.08em; color:var(--gold-soft); font-weight:600;}
+  .pillar-hanja{
+    writing-mode:vertical-rl; text-orientation:upright;
+    font-family:var(--font-display); font-size:1.5rem; font-weight:600; color:var(--ivory);
+    letter-spacing:0.15em;
+  }
+  .pillar-mark{width:8px; height:8px; background:var(--cinnabar); border-radius:1px;}
+  @keyframes riseIn{ to{opacity:1; transform:translateY(0);} }
+  .pillars-caption{font-size:0.82rem; color:rgba(237,227,203,0.55); margin-top:0.4rem;}
+  @media (prefers-reduced-motion:reduce){ .pillar{animation:none; opacity:1; transform:none;} }
+
+  /* MOMENTS */
+  .moments{max-width:var(--maxw); margin:0 auto; text-align:center;}
+  .moments h2{font-size:clamp(1.4rem,2.6vw,1.9rem); margin-bottom:2.4rem;}
+  .moment-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1.1rem; text-align:left;}
+  @media (max-width:900px){ .moment-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .moment-grid{grid-template-columns:1fr;} }
+  .moment-card{
+    background:#fff; border:1px solid var(--paper-line); border-radius:6px; padding:1.5rem 1.3rem;
+  }
+  .moment-icon{
+    display:inline-flex; align-items:center; justify-content:center; width:2.4rem; height:2.4rem;
+    border-radius:50%; background:var(--ink); color:var(--gold-soft); font-family:var(--font-display);
+    font-size:1.1rem; margin-bottom:0.9rem;
+  }
+  .moment-card h3{font-size:1.05rem; margin-bottom:0.5rem;}
+  .moment-card p{font-size:0.9rem; color:#4b453a;}
+
+  /* EXPERT */
+  .expert{background:var(--paper-dim);}
+  .expert-inner{
+    max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:220px 1fr; gap:2.6rem; align-items:center;
+  }
+  @media (max-width:720px){ .expert-inner{grid-template-columns:1fr; text-align:center;} }
+  .expert-photo{
+    width:200px; height:200px; border-radius:50%; margin:0 auto;
+    background:radial-gradient(circle at 35% 30%, #4a4032, var(--ink) 72%);
+    border:3px solid var(--gold); position:relative; display:flex; align-items:center; justify-content:center;
+  }
+  .expert-photo span{font-family:var(--font-display); color:var(--ivory); font-size:2.6rem;}
+  .expert h2{font-size:clamp(1.3rem,2.4vw,1.7rem); margin-bottom:0.9rem;}
+  .expert-text p{color:#3c362b; max-width:52ch;}
+  @media (max-width:720px){ .expert-text p{margin:0 auto;} }
+  .expert-stats{display:flex; gap:2rem; margin-top:1.6rem; flex-wrap:wrap;}
+  @media (max-width:720px){ .expert-stats{justify-content:center;} }
+  .expert-stats li{display:flex; flex-direction:column;}
+  .expert-stats strong{font-family:var(--font-display); font-size:1.3rem; color:var(--cinnabar);}
+  .expert-stats span{font-size:0.8rem; color:#5a5346;}
+
+  /* REVIEWS */
+  .reviews{max-width:var(--maxw); margin:0 auto; text-align:center;}
+  .reviews h2{font-size:clamp(1.4rem,2.6vw,1.9rem); margin-bottom:2.4rem;}
+  .review-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; text-align:left;}
+  @media (max-width:820px){ .review-grid{grid-template-columns:1fr;} }
+  .review-card{
+    position:relative; background:#fff; border:1px solid var(--paper-line); border-radius:4px;
+    padding:1.6rem 1.4rem 1.3rem; box-shadow:2px 3px 0 rgba(21,18,13,0.05);
+  }
+  .review-stamp{
+    position:absolute; top:-14px; right:16px; width:32px; height:32px; border-radius:4px;
+    background:var(--cinnabar); color:var(--ivory); font-family:var(--font-display);
+    display:flex; align-items:center; justify-content:center; font-size:1rem; transform:rotate(-6deg);
+    box-shadow:0 2px 5px rgba(0,0,0,0.25);
+  }
+  .review-card p{font-size:0.95rem; color:#3c362b; margin-bottom:1rem;}
+  .review-name{font-size:0.8rem; color:#8a8272;}
+
+  /* APPLY / FORM */
+  .apply{background:var(--ink); color:var(--ivory);}
+  .apply-inner{max-width:640px; margin:0 auto;}
+  .apply h2{font-size:clamp(1.4rem,2.6vw,1.9rem); margin-bottom:0.8rem;}
+  .apply-sub{color:rgba(237,227,203,0.72); font-size:0.94rem; margin-bottom:2.2rem;}
+  .lead-form{
+    background:var(--paper); color:var(--ink-text); border-radius:8px; padding:clamp(1.4rem,3vw,2.2rem);
+    border:1px solid rgba(198,154,46,0.4);
+  }
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.1rem;}
+  @media (max-width:560px){ .form-row{grid-template-columns:1fr;} }
+  .lead-form label{display:flex; flex-direction:column; gap:0.4rem; font-size:0.86rem; font-weight:600; color:#443f33;}
+  .field-head{display:flex; align-items:center; gap:0.9rem; flex-wrap:wrap;}
+  .lead-form input[type=text], .lead-form input[type=tel], .lead-form input[type=email], .lead-form input[type=date],
+  .lead-form select, .lead-form textarea{
+    border:1px solid var(--paper-line); border-radius:4px; padding:0.65rem 0.7rem; background:#fffdf8; color:var(--ink-text);
+    font-weight:400;
+  }
+  .lead-form textarea{resize:vertical;}
+  .radio-group{display:flex; gap:1rem; flex-wrap:wrap; font-weight:400; font-size:0.9rem;}
+  .radio-group label{flex-direction:row; align-items:center; gap:0.35rem; font-weight:400;}
+  .agree{
+    display:flex; flex-direction:row; align-items:flex-start; gap:0.5rem; font-size:0.8rem;
+    color:#5a5346; font-weight:400; margin:1.2rem 0 1.4rem;
+  }
+  .agree input{margin-top:0.2rem;}
+  .btn-submit{width:100%; padding:1rem;}
+
+  /* FAQ */
+  .faq{max-width:760px; margin:0 auto;}
+  .faq h2{font-size:clamp(1.4rem,2.6vw,1.9rem); margin-bottom:1.6rem; text-align:center;}
+  .faq-list details{
+    border-bottom:1px solid var(--paper-line); padding:1rem 0.2rem;
+  }
+  .faq-list summary{cursor:pointer; font-weight:600; list-style:none; position:relative; padding-right:1.6rem;}
+  .faq-list summary::-webkit-details-marker{display:none;}
+  .faq-list summary::after{content:"+"; position:absolute; right:0; top:0; font-size:1.2rem; color:var(--cinnabar);}
+  .faq-list details[open] summary::after{content:"–";}
+  .faq-list p{margin-top:0.7rem; font-size:0.9rem; color:#4b453a;}
+
+  /* FOOTER */
+  .site-footer{
+    background:var(--ink-soft); color:rgba(237,227,203,0.65); text-align:center;
+    padding:2.4rem 1.4rem 1.6rem; font-size:0.82rem;
+  }
+  .site-footer p{margin-bottom:0.4rem;}
+  .footer-fine{font-size:0.75rem; color:rgba(237,227,203,0.4);}
+  .admin-link{
+    margin-top:1rem; background:none; border:none; color:rgba(237,227,203,0.35); font-size:0.72rem; cursor:pointer;
+  }
+  .admin-link:hover{color:rgba(237,227,203,0.6);}
+
+  /* MODALS */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(15,13,10,0.6); display:flex; align-items:center; justify-content:center;
+    padding:1.2rem; z-index:100;
+  }
+  .modal-overlay.hidden{display:none;}
+  .modal{
+    background:var(--paper); border-radius:8px; padding:1.8rem; max-width:380px; width:100%;
+    text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  }
+  .modal h3{font-size:1.15rem; margin-bottom:0.9rem;}
+  .modal p{font-size:0.9rem; color:#4b453a; margin-bottom:1.2rem;}
+  .modal input[type=password]{
+    width:100%; padding:0.7rem 0.8rem; border:1px solid var(--paper-line); border-radius:4px; margin-bottom:1rem;
+  }
+  .modal-actions{display:flex; gap:0.6rem; justify-content:center; margin-bottom:0.4rem;}
+  .modal-wide{max-width:960px; text-align:left;}
+  .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;}
+  .modal-wide .modal-actions{justify-content:flex-start; margin-bottom:1rem;}
+  /* CHARACTER VIDEO */
+  .character-video{max-width:var(--maxw); margin:0 auto; text-align:center;}
+  .character-video-inner{position:relative; border-radius:10px; overflow:hidden; background:#000; box-shadow:0 14px 34px rgba(21,18,13,0.16);}
+  .character-video-inner video{width:100%; display:block; aspect-ratio:16/9; object-fit:cover;}
+  .video-placeholder{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:rgba(237,227,203,0.65); font-size:0.9rem; padding:1rem; text-align:center;
+    background:linear-gradient(135deg,#2a241a,#141210);
+  }
+
+  /* RESULT MODAL EXTRAS */
+  .result-video-wrap{position:relative; border-radius:8px; overflow:hidden; background:#000; margin:1.2rem 0;}
+  .result-video-wrap video{width:100%; display:block; aspect-ratio:16/9; object-fit:cover;}
+  .kakao-link-btn{
+    display:flex; align-items:center; justify-content:center; gap:0.5rem;
+    background:#FEE500; color:#191919; font-weight:700; text-decoration:none;
+    padding:0.85rem 1.2rem; border-radius:8px; margin-bottom:1.2rem; font-size:0.95rem;
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .kakao-link-btn:hover{ box-shadow:0 6px 16px rgba(254,229,0,0.45); transform:translateY(-1px); }
+
+  .deposit-box{
+    position:relative; padding:1.4rem; border-radius:10px; overflow:hidden;
+    background:linear-gradient(135deg, var(--ink), #2a2318); border:1px solid var(--gold);
+  }
+  .deposit-box::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(120deg, transparent, rgba(198,154,46,0.45), transparent);
+    background-size:200% 100%; animation:shimmer 2.4s linear infinite;
+  }
+  @keyframes shimmer{ 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+  .deposit-label{position:relative; color:var(--gold-soft); font-size:0.8rem; letter-spacing:0.08em; margin-bottom:0.5rem;}
+  .deposit-account{
+    position:relative; display:flex; align-items:center; justify-content:center; gap:0.8rem; flex-wrap:wrap;
+    font-family:var(--font-display); font-size:clamp(1.1rem,4vw,1.5rem); font-weight:700; color:var(--ivory);
+    animation:pulseGlow 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{ text-shadow:0 0 0 rgba(224,196,106,0); }
+    50%{ text-shadow:0 0 16px rgba(224,196,106,0.55); }
+  }
+  .copy-btn{
+    background:var(--gold); color:var(--ink); border:none; border-radius:4px; padding:0.35rem 0.7rem;
+    font-size:0.75rem; font-weight:700; cursor:pointer;
+  }
+  @media (prefers-reduced-motion:reduce){ .deposit-box::before, .deposit-account{animation:none;} }
+
+  /* ADMIN SETTINGS */
+  .admin-settings{margin-bottom:1.2rem; padding-bottom:1.2rem; border-bottom:1px solid var(--paper-line);}
+  .admin-settings-title{font-size:0.9rem; font-weight:700; margin-bottom:0.7rem; color:#332e24;}
+  .admin-settings-label{display:flex; flex-direction:column; gap:0.35rem; font-size:0.82rem; font-weight:600; color:#443f33; margin-bottom:0.8rem;}
+  .admin-settings-label input{padding:0.55rem 0.65rem; border:1px solid var(--paper-line); border-radius:4px; font-weight:400; font-size:0.88rem;}
+  .lead-table-wrap{overflow-x:auto; max-height:52vh;}
+  .lead-table{width:100%; border-collapse:collapse; font-size:0.82rem;}
+  .lead-table th, .lead-table td{border-bottom:1px solid var(--paper-line); padding:0.5rem 0.6rem; text-align:left; white-space:nowrap;}
+  .lead-table th{color:#6b6455; font-weight:600;}
+  .row-del{color:var(--cinnabar); background:none; border:none; cursor:pointer; font-size:0.8rem;}
+  .success-seal{
+    display:inline-flex; align-items:center; justify-content:center; width:3rem; height:3rem; border-radius:50%;
+    background:var(--cinnabar); color:var(--ivory); font-family:var(--font-display); font-size:1.3rem; margin-bottom:1rem;
+  }
+  .empty-note{color:#8a8272; font-size:0.85rem; padding:1rem 0;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:none;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand"><span class="brand-seal">結</span>결명당</a>
+    <nav class="nav-links">
+      <a href="#moments">이럴 때</a>
+      <a href="#expert">역술가 소개</a>
+      <a href="#reviews">후기</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#apply" class="btn btn-cta">신청하기</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">사주단자 신청</p>
+      <h1>태어난 순간에 새겨진<br>여덟 글자를 풀어드립니다</h1>
+      <p class="hero-sub">생년월일시만 남겨주세요.<br>신청하시면 전문 역술가가 사주를 풀어드립니다.</p>
+      <div class="hero-cta">
+        <a href="#apply" class="btn btn-primary">사주단자 작성하기</a>
+        <span class="hero-note">작성에 1분이면 충분합니다</span>
+      </div>
+
+      <div class="pillars" aria-hidden="true">
+        <div class="pillar" style="--d:0s"><span class="pillar-label">년주</span><span class="pillar-hanja">甲子</span><span class="pillar-mark"></span></div>
+        <div class="pillar" style="--d:.15s"><span class="pillar-label">월주</span><span class="pillar-hanja">丙寅</span><span class="pillar-mark"></span></div>
+        <div class="pillar" style="--d:.3s"><span class="pillar-label">일주</span><span class="pillar-hanja">戊午</span><span class="pillar-mark"></span></div>
+        <div class="pillar" style="--d:.45s"><span class="pillar-label">시주</span><span class="pillar-hanja">庚申</span><span class="pillar-mark"></span></div>
+      </div>
+      <p class="pillars-caption">년주 · 월주 · 일주 · 시주 — 네 개의 기둥, 여덟 글자. 그것이 사주팔자(四柱八字)입니다</p>
+    </div>
+  </section>
+
+  <section class="moments grain reveal" id="moments">
+    <h2>이런 순간, 사주가 방향을 알려줍니다</h2>
+    <div class="moment-grid">
+      <div class="moment-card">
+        <span class="moment-icon">緣</span>
+        <h3>인연과 연애</h3>
+        <p>지금 만나는 사람과의 궁합, 언제쯤 좋은 인연이 올지 궁금할 때</p>
+      </div>
+      <div class="moment-card">
+        <span class="moment-icon">業</span>
+        <h3>이직과 사업</h3>
+        <p>퇴사와 창업, 계약 시점처럼 되돌리기 어려운 결정을 앞뒀을 때</p>
+      </div>
+      <div class="moment-card">
+        <span class="moment-icon">宅</span>
+        <h3>이사와 개업일</h3>
+        <p>이사 날짜, 개업일, 계약일처럼 날짜 하나가 마음에 걸릴 때</p>
+      </div>
+      <div class="moment-card">
+        <span class="moment-icon">路</span>
+        <h3>인생의 갈림길</h3>
+        <p>선택지는 많은데 무엇을 골라야 할지 스스로 확신이 서지 않을 때</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="expert reveal" id="expert">
+    <div class="expert-inner">
+      <div class="expert-photo"><span>素</span></div>
+      <div class="expert-text">
+        <p class="eyebrow">역술가 소개</p>
+        <h2>결명당 대표 역술가 소경(素景)</h2>
+        <p>명리학과 자평명리를 오래 연구하며 상담을 이어온 결명당은, 화려한 말보다 근거 있는 풀이를 우선합니다. 사주팔자와 대운의 흐름을 함께 짚어드립니다.</p>
+        <ul class="expert-stats">
+          <li><strong>1,000+</strong><span>누적 상담</span></li>
+          <li><strong>당일 회신</strong><span>신청 후 연락</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="character-video reveal">
+    <div class="character-video-inner">
+      <video id="charVideo" controls playsinline>
+        <source id="charVideoSource" src="" type="video/mp4">
+      </video>
+      <p class="video-placeholder" id="charVideoPlaceholder">캐릭터 영상을 준비 중입니다 (관리자 페이지에서 등록해주세요)</p>
+    </div>
+  </section>
+
+  <section class="reviews reveal" id="reviews">
+    <h2>먼저 다녀가신 분들의 후기</h2>
+    <div class="review-grid">
+      <article class="review-card">
+        <span class="review-stamp">結</span>
+        <p>"이직 시점 때문에 반년을 고민했는데, 대운 흐름을 짚어주셔서 마음을 정했어요."</p>
+        <span class="review-name">30대 · 직장인</span>
+      </article>
+      <article class="review-card">
+        <span class="review-stamp">結</span>
+        <p>"태어난 시간을 몰라서 걱정했는데 일주만으로도 꽤 정확하게 봐주셨어요."</p>
+        <span class="review-name">20대 · 대학원생</span>
+      </article>
+      <article class="review-card">
+        <span class="review-stamp">結</span>
+        <p>"개업일 잡을 때 상담받았는데, 설명이 구체적이라 믿음이 갔습니다."</p>
+        <span class="review-name">40대 · 자영업</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="apply reveal" id="apply">
+    <div class="apply-inner">
+      <p class="eyebrow">사주단자 작성</p>
+      <h2>사주단자(四柱單子)를 남겨주세요</h2>
+      <p class="apply-sub">예로부터 생년월일시를 적어 건네는 종이를 사주단자라 불렀습니다. 아래 정보를 남겨주시면 순서대로 연락드립니다.</p>
+
+      <form id="leadForm" class="lead-form">
+        <div class="form-row">
+          <label>이름
+            <input type="text" name="name" required placeholder="홍길동">
+          </label>
+          <label>
+            <span class="field-head">연락처
+              <span class="radio-group">
+                <label><input type="radio" name="contactType" value="이메일" checked> 이메일</label>
+                <label><input type="radio" name="contactType" value="카카오톡 아이디"> 카카오톡 아이디</label>
+              </span>
+            </span>
+            <input type="text" name="contactValue" id="contactValue" required placeholder="example@email.com">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>성별
+            <div class="radio-group">
+              <label><input type="radio" name="gender" value="여성" checked> 여성</label>
+              <label><input type="radio" name="gender" value="남성"> 남성</label>
+              <label><input type="radio" name="gender" value="응답 안 함"> 응답 안 함</label>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>생년월일 기준
+            <div class="radio-group">
+              <label><input type="radio" name="calendar" value="양력" checked> 양력</label>
+              <label><input type="radio" name="calendar" value="음력"> 음력</label>
+            </div>
+          </label>
+          <label>생년월일
+            <input type="date" name="birthdate" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>태어난 시간 (시진)
+            <select name="birthtime">
+              <option value="모름">모름 (시간 모름)</option>
+              <option>자시 (23:30~01:29)</option>
+              <option>축시 (01:30~03:29)</option>
+              <option>인시 (03:30~05:29)</option>
+              <option>묘시 (05:30~07:29)</option>
+              <option>진시 (07:30~09:29)</option>
+              <option>사시 (09:30~11:29)</option>
+              <option>오시 (11:30~13:29)</option>
+              <option>미시 (13:30~15:29)</option>
+              <option>신시 (15:30~17:29)</option>
+              <option>유시 (17:30~19:29)</option>
+              <option>술시 (19:30~21:29)</option>
+              <option>해시 (21:30~23:29)</option>
+            </select>
+          </label>
+          <label>궁금한 운(運)
+            <select name="topic">
+              <option>종합운</option>
+              <option>연애·결혼</option>
+              <option>재회운</option>
+              <option>재물·사업</option>
+              <option>진로·이직</option>
+              <option>건강</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-row" style="grid-template-columns:1fr;">
+          <label>남기고 싶은 말 (선택)
+            <textarea name="memo" rows="3" placeholder="구체적으로 남겨주시면 상담에 도움이 됩니다"></textarea>
+          </label>
+        </div>
+
+        <label class="agree">
+          <input type="checkbox" required>
+          <span>남겨주신 정보는 사주 상담 목적으로만 사용되며, 상담 종료 후 파기됩니다.</span>
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-submit">사주단자 남기기</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="faq reveal" id="faq">
+    <h2>자주 묻는 질문</h2>
+    <div class="faq-list">
+      <details>
+        <summary>카카오톡 상담인가요, 대면 상담인가요?</summary>
+        <p>신청서 접수 후 담당 역술가가 먼저 카카오톡으로 연락드리며, 원하시면 대면 상담으로 이어갑니다.</p>
+      </details>
+      <details>
+        <summary>태어난 시간을 정확히 몰라요.</summary>
+        <p>시간을 모르셔도 접수 가능합니다. "모름"을 선택해주세요. 년주·월주·일주만으로도 상당 부분 풀이가 가능합니다.</p>
+      </details>
+      <details>
+        <summary>양력과 음력, 어떤 걸 입력해야 하나요?</summary>
+        <p>알고 계신 대로 입력하시면 됩니다. 담당자가 확인 후 정확히 환산해드립니다.</p>
+      </details>
+      <details>
+        <summary>상담 비용이 있나요?</summary>
+        <p>상담 비용은 상담 항목과 방식에 따라 달라지며, 접수 시 자세히 안내해드립니다.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>결명당<span id="footerKakaoWrap"></span> · 평일 10:00–22:00</p>
+  <p class="footer-fine">신청서를 통해 수집된 정보는 상담 목적 외에 사용되지 않습니다.</p>
+  <button id="adminOpen" class="admin-link">관리자</button>
+</footer>
+
+<div id="adminGate" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>관리자 확인</h3>
+    <input type="password" id="adminPw" placeholder="비밀번호">
+    <div class="modal-actions">
+      <button id="adminCancel" class="btn btn-ghost">취소</button>
+      <button id="adminSubmit" class="btn btn-primary">확인</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminPanel" class="modal-overlay hidden">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h3>접수된 사주단자 (<span id="leadCount">0</span>건)</h3>
+      <button id="adminClose" class="btn btn-ghost">닫기</button>
+    </div>
+    <div class="admin-settings">
+      <p class="admin-settings-title">사이트 설정</p>
+      <label class="admin-settings-label">카카오톡 상담 아이디 (하단 문의처에 표시)
+        <input type="text" id="kakaoIdInput" placeholder="카카오톡 아이디">
+      </label>
+      <label class="admin-settings-label">카카오톡 오픈채팅 링크 (접수 완료 화면 버튼)
+        <input type="url" id="kakaoLinkInput" placeholder="https://open.kakao.com/o/xxxxxxx">
+      </label>
+      <label class="admin-settings-label">캐릭터 소개 영상 URL (통계-후기 사이 섹션)
+        <input type="url" id="charVideoInput" placeholder="영상 파일 URL (mp4)">
+      </label>
+      <label class="admin-settings-label">신청 완료 후 재생 영상 URL
+        <input type="url" id="resultVideoInput" placeholder="영상 파일 URL (mp4)">
+      </label>
+      <label class="admin-settings-label">입금 계좌 정보
+        <input type="text" id="depositInput" placeholder="예: 국민은행 123456-78-901234 홍길동">
+      </label>
+      <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
+    </div>
+    <div class="modal-actions">
+      <button id="exportCsv" class="btn btn-secondary">CSV로 내보내기</button>
+      <button id="clearAll" class="btn btn-danger">전체 삭제</button>
+    </div>
+    <div class="lead-table-wrap">
+      <table class="lead-table" id="leadTable">
+        <thead><tr>
+          <th>접수일시</th><th>이름</th><th>연락처</th><th>성별</th><th>생년월일</th><th>시간</th><th>궁금한 것</th><th>메모</th><th></th>
+        </tr></thead>
+        <tbody id="leadTbody"></tbody>
+      </table>
+      <p class="empty-note" id="emptyNote" style="display:none;">아직 접수된 사주단자가 없습니다.</p>
+    </div>
+  </div>
+</div>
+
+<div id="successModal" class="modal-overlay hidden">
+  <div class="modal modal-wide">
+    <span class="success-seal">結</span>
+    <h3>사주단자가 접수되었습니다</h3>
+    <p>아래 영상을 확인해주세요.</p>
+
+    <div class="result-video-wrap">
+      <video id="resultVideo" autoplay muted playsinline loop>
+        <source id="resultVideoSource" src="" type="video/mp4">
+      </video>
+      <p class="video-placeholder" id="resultVideoPlaceholder">영상을 준비 중입니다</p>
+    </div>
+
+    <a href="#" id="kakaoLinkBtn" target="_blank" rel="noopener" class="kakao-link-btn" style="display:none;">카카오톡으로 상담 이어가기</a>
+
+    <div class="deposit-box">
+      <p class="deposit-label">상담 확정 입금 계좌</p>
+      <div class="deposit-account">
+        <span id="depositAccountText">계좌 정보를 준비 중입니다</span>
+        <button id="copyAccount" class="copy-btn" type="button">복사</button>
+      </div>
+    </div>
+
+    <button id="successClose" class="btn btn-secondary" style="margin-top:1.2rem;">닫기</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ADMIN_PW = 'gmd0000';
+  var PREFIX = 'lead:';
+
+  // ---- reveal on scroll ----
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // ---- shared lead storage (모든 방문자의 신청이 한 곳에 모입니다) ----
+  async function addLead(lead){
+    try{
+      var result = await window.storage.set(PREFIX + lead.id, JSON.stringify(lead), true);
+      return !!result;
+    }catch(e){ console.error('저장 실패', e); return false; }
+  }
+
+  async function getAllLeads(){
+    var leads = [];
+    try{
+      var listResult = await window.storage.list(PREFIX, true);
+      var keys = (listResult && listResult.keys) || [];
+      for(var i=0;i<keys.length;i++){
+        try{
+          var res = await window.storage.get(keys[i], true);
+          if(res && res.value){ leads.push(JSON.parse(res.value)); }
+        }catch(e){ /* 이미 삭제된 항목은 건너뜀 */ }
+      }
+    }catch(e){ console.error('불러오기 실패', e); }
+    leads.sort(function(a,b){ return b.id - a.id; });
+    return leads;
+  }
+
+  async function deleteLead(id){
+    try{ await window.storage.delete(PREFIX + id, true); }
+    catch(e){ console.error('삭제 실패', e); }
+  }
+
+  // ---- 관리자 설정값 (공유 저장소) ----
+  async function loadSetting(key){
+    try{
+      var res = await window.storage.get(key, true);
+      return (res && res.value) || '';
+    }catch(e){ return ''; }
+  }
+
+  function applyVideoSrc(videoEl, sourceEl, placeholderEl, url){
+    if(url){
+      sourceEl.src = url;
+      videoEl.load();
+      if(placeholderEl) placeholderEl.style.display = 'none';
+    } else if(placeholderEl){
+      placeholderEl.style.display = '';
+    }
+  }
+
+  // ---- 푸터의 카카오톡 상담 아이디 (관리자 모드에서 설정) ----
+  async function loadFooterKakao(){
+    var val = await loadSetting('settings:kakao');
+    document.getElementById('footerKakaoWrap').textContent = val ? (' · 상담 문의 카카오톡 ' + val) : '';
+  }
+  loadFooterKakao();
+
+  // ---- 캐릭터 소개 영상 (통계-후기 사이) ----
+  async function loadCharVideo(){
+    var url = await loadSetting('settings:charvideo');
+    applyVideoSrc(document.getElementById('charVideo'), document.getElementById('charVideoSource'), document.getElementById('charVideoPlaceholder'), url);
+  }
+  loadCharVideo();
+
+  // ---- 신청 완료 모달: 결과 영상 / 카카오 링크 / 입금 계좌 준비 ----
+  async function prepareResultModal(){
+    var resultVideoUrl = await loadSetting('settings:resultvideo');
+    applyVideoSrc(document.getElementById('resultVideo'), document.getElementById('resultVideoSource'), document.getElementById('resultVideoPlaceholder'), resultVideoUrl);
+
+    var kakaoLink = await loadSetting('settings:kakaolink');
+    var kakaoBtn = document.getElementById('kakaoLinkBtn');
+    if(kakaoLink){ kakaoBtn.href = kakaoLink; kakaoBtn.style.display = ''; }
+    else{ kakaoBtn.style.display = 'none'; }
+
+    var deposit = await loadSetting('settings:deposit');
+    document.getElementById('depositAccountText').textContent = deposit || '계좌 정보를 준비 중입니다';
+  }
+
+  // ---- form submit ----
+  var form = document.getElementById('leadForm');
+
+  var contactValueInput = document.getElementById('contactValue');
+  document.querySelectorAll('input[name="contactType"]').forEach(function(radio){
+    radio.addEventListener('change', function(){
+      if(!radio.checked) return;
+      if(radio.value === '이메일'){
+        contactValueInput.type = 'email';
+        contactValueInput.placeholder = 'example@email.com';
+      } else {
+        contactValueInput.type = 'text';
+        contactValueInput.placeholder = '카카오톡 아이디';
+      }
+    });
+  });
+
+  form.addEventListener('submit', async function(ev){
+    ev.preventDefault();
+    var fd = new FormData(form);
+    var contactType = fd.get('contactType') || '';
+    var contactValue = (fd.get('contactValue') || '').trim();
+    var lead = {
+      id: Date.now(),
+      submittedAt: new Date().toLocaleString('ko-KR'),
+      name: fd.get('name') || '',
+      contact: contactType + ': ' + contactValue,
+      gender: fd.get('gender') || '',
+      calendar: fd.get('calendar') || '',
+      birthdate: fd.get('birthdate') || '',
+      birthtime: fd.get('birthtime') || '',
+      topic: fd.get('topic') || '',
+      memo: fd.get('memo') || ''
+    };
+    var btn = form.querySelector('.btn-submit');
+    var originalLabel = btn.textContent;
+    btn.disabled = true; btn.textContent = '남기는 중...';
+    var ok = await addLead(lead);
+    btn.disabled = false; btn.textContent = originalLabel;
+    if(ok){
+      form.reset();
+      await prepareResultModal();
+      openModal('successModal');
+    } else {
+      alert('접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  });
+
+  // ---- modal helpers ----
+  function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
+  function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+
+  document.getElementById('successClose').addEventListener('click', function(){ closeModal('successModal'); });
+
+  document.getElementById('copyAccount').addEventListener('click', async function(){
+    var text = document.getElementById('depositAccountText').textContent.trim();
+    var btn = this;
+    var original = btn.textContent;
+    try{
+      await navigator.clipboard.writeText(text);
+      btn.textContent = '복사됨';
+    }catch(e){
+      btn.textContent = '복사 실패';
+    }
+    setTimeout(function(){ btn.textContent = original; }, 1500);
+  });
+
+  // ---- admin gate ----
+  document.getElementById('adminOpen').addEventListener('click', function(){
+    document.getElementById('adminPw').value = '';
+    openModal('adminGate');
+  });
+  document.getElementById('adminCancel').addEventListener('click', function(){ closeModal('adminGate'); });
+  document.getElementById('adminSubmit').addEventListener('click', checkAdminPw);
+  document.getElementById('adminPw').addEventListener('keydown', function(e){ if(e.key==='Enter') checkAdminPw(); });
+
+  var SETTINGS_FIELDS = [
+    {key:'settings:kakao', inputId:'kakaoIdInput'},
+    {key:'settings:kakaolink', inputId:'kakaoLinkInput'},
+    {key:'settings:charvideo', inputId:'charVideoInput'},
+    {key:'settings:resultvideo', inputId:'resultVideoInput'},
+    {key:'settings:deposit', inputId:'depositInput'}
+  ];
+
+  async function checkAdminPw(){
+    var val = document.getElementById('adminPw').value;
+    if(val === ADMIN_PW){
+      closeModal('adminGate');
+      openModal('adminPanel');
+      await renderAdminPanel();
+      for(var i=0;i<SETTINGS_FIELDS.length;i++){
+        var f = SETTINGS_FIELDS[i];
+        document.getElementById(f.inputId).value = await loadSetting(f.key);
+      }
+    } else {
+      alert('비밀번호가 올바르지 않습니다.');
+    }
+  }
+  document.getElementById('adminClose').addEventListener('click', function(){ closeModal('adminPanel'); });
+
+  document.getElementById('saveSettings').addEventListener('click', async function(){
+    var btn = this;
+    var original = btn.textContent;
+    btn.disabled = true; btn.textContent = '저장 중...';
+    try{
+      for(var i=0;i<SETTINGS_FIELDS.length;i++){
+        var f = SETTINGS_FIELDS[i];
+        var val = document.getElementById(f.inputId).value.trim();
+        await window.storage.set(f.key, val, true);
+      }
+      await loadFooterKakao();
+      await loadCharVideo();
+      btn.textContent = '저장됨';
+    }catch(e){
+      alert('저장 중 문제가 발생했습니다. 다시 시도해주세요.');
+      btn.textContent = original;
+    }
+    setTimeout(function(){ btn.disabled = false; btn.textContent = original; }, 1200);
+  });
+
+  async function renderAdminPanel(){
+    var tbody = document.getElementById('leadTbody');
+    var emptyNote = document.getElementById('emptyNote');
+    tbody.innerHTML = '<tr><td colspan="9" style="color:#8a8272;">불러오는 중...</td></tr>';
+    emptyNote.style.display = 'none';
+
+    var leads = await getAllLeads();
+    tbody.innerHTML = '';
+    document.getElementById('leadCount').textContent = leads.length;
+    emptyNote.style.display = leads.length ? 'none' : 'block';
+
+    leads.forEach(function(lead){
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>'+escapeHtml(lead.submittedAt)+'</td>'+
+        '<td>'+escapeHtml(lead.name)+'</td>'+
+        '<td>'+escapeHtml(lead.contact)+'</td>'+
+        '<td>'+escapeHtml(lead.gender)+'</td>'+
+        '<td>'+escapeHtml(lead.calendar)+' '+escapeHtml(lead.birthdate)+'</td>'+
+        '<td>'+escapeHtml(lead.birthtime)+'</td>'+
+        '<td>'+escapeHtml(lead.topic)+'</td>'+
+        '<td>'+escapeHtml(lead.memo)+'</td>'+
+        '<td><button class="row-del" data-id="'+lead.id+'">삭제</button></td>';
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.row-del').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var id = Number(btn.getAttribute('data-id'));
+        btn.disabled = true; btn.textContent = '삭제 중...';
+        await deleteLead(id);
+        await renderAdminPanel();
+      });
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  document.getElementById('clearAll').addEventListener('click', async function(){
+    if(confirm('접수된 사주단자를 모두 삭제할까요? 되돌릴 수 없습니다.')){
+      var leads = await getAllLeads();
+      for(var i=0;i<leads.length;i++){ await deleteLead(leads[i].id); }
+      await renderAdminPanel();
+    }
+  });
+
+  document.getElementById('exportCsv').addEventListener('click', async function(){
+    var leads = await getAllLeads();
+    if(!leads.length){ alert('내보낼 데이터가 없습니다.'); return; }
+    var headers = ['접수일시','이름','연락처','성별','달력','생년월일','태어난시간','궁금한것','메모'];
+    var rows = leads.map(function(l){
+      return [l.submittedAt,l.name,l.contact,l.gender,l.calendar,l.birthdate,l.birthtime,l.topic,l.memo]
+        .map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(',');
+    });
+    var csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = '결명당_사주단자_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+})();
+</script>
+
+</body>
+</html>
