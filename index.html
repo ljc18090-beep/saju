@@ -578,13 +578,10 @@
         <input type="url" id="kakaoLinkInput" placeholder="https://open.kakao.com/o/xxxxxxx">
       </label>
       <label class="admin-settings-label">캐릭터 소개 영상 URL (통계-후기 사이 섹션)
-        <input type="url" id="charVideoInput" placeholder="영상 파일 URL (mp4)">
+        <input type="text" id="charVideoInput" placeholder="영상 파일명 (예: character.mp4) 또는 전체 URL">
       </label>
       <label class="admin-settings-label">신청 완료 후 재생 영상 URL
-        <input type="url" id="resultVideoInput" placeholder="영상 파일 URL (mp4)">
-      </label>
-      <label class="admin-settings-label">입금 계좌 정보
-        <input type="text" id="depositInput" placeholder="예: 국민은행 123456-78-901234 홍길동">
+        <input type="text" id="resultVideoInput" placeholder="영상 파일명 (예: result.mp4) 또는 전체 URL">
       </label>
       <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
     </div>
@@ -610,7 +607,6 @@
   <div class="modal modal-wide">
     <span class="success-seal">結</span>
     <h3>사주단자가 접수되었습니다</h3>
-    <p>아래 영상을 확인해주세요.</p>
 
     <div class="result-video-wrap">
       <video id="resultVideo" autoplay muted playsinline loop>
@@ -620,14 +616,6 @@
     </div>
 
     <a href="#" id="kakaoLinkBtn" target="_blank" rel="noopener" class="kakao-link-btn" style="display:none;">카카오톡으로 상담 이어가기</a>
-
-    <div class="deposit-box">
-      <p class="deposit-label">상담 확정 입금 계좌</p>
-      <div class="deposit-account">
-        <span id="depositAccountText">계좌 정보를 준비 중입니다</span>
-        <button id="copyAccount" class="copy-btn" type="button">복사</button>
-      </div>
-    </div>
 
     <button id="successClose" class="btn btn-secondary" style="margin-top:1.2rem;">닫기</button>
   </div>
@@ -658,8 +646,7 @@
     kakaoId: '',
     kakaoLink: '',
     charVideoUrl: '',
-    resultVideoUrl: '',
-    depositAccount: ''
+    resultVideoUrl: ''
   };
 
   async function loadConfig(){
@@ -671,7 +658,6 @@
         CONFIG.kakaoLink = data.kakaoLink || '';
         CONFIG.charVideoUrl = data.charVideoUrl || '';
         CONFIG.resultVideoUrl = data.resultVideoUrl || '';
-        CONFIG.depositAccount = data.depositAccount || '';
       }
     }catch(e){ console.error('설정 불러오기 실패', e); }
     applyPublicConfig();
@@ -695,7 +681,15 @@
     revealEls.forEach(function(el){ el.classList.add('in'); });
   }
 
+  function normalizeVideoUrl(url){
+    url = (url || '').trim();
+    if(!url) return '';
+    if(/^https?:\/\//i.test(url) || url.charAt(0) === '/') return url;
+    return '/' + url;
+  }
+
   function applyVideoSrc(videoEl, sourceEl, placeholderEl, url){
+    url = normalizeVideoUrl(url);
     if(url){
       sourceEl.src = url;
       videoEl.load();
@@ -707,15 +701,13 @@
 
   // ---- 푸터 카카오/캐릭터 영상은 loadConfig()가 채웁니다 (아래에서 호출) ----
 
-  // ---- 신청 완료 모달: 결과 영상 / 카카오 링크 / 입금 계좌 준비 ----
+  // ---- 신청 완료 모달: 결과 영상 / 카카오 링크 준비 ----
   function prepareResultModal(){
     applyVideoSrc(document.getElementById('resultVideo'), document.getElementById('resultVideoSource'), document.getElementById('resultVideoPlaceholder'), CONFIG.resultVideoUrl);
 
     var kakaoBtn = document.getElementById('kakaoLinkBtn');
     if(CONFIG.kakaoLink){ kakaoBtn.href = CONFIG.kakaoLink; kakaoBtn.style.display = ''; }
     else{ kakaoBtn.style.display = 'none'; }
-
-    document.getElementById('depositAccountText').textContent = CONFIG.depositAccount || '계좌 정보를 준비 중입니다';
   }
 
   // ---- form submit (Firebase Firestore의 "leads" 컬렉션에 저장됩니다) ----
@@ -775,19 +767,6 @@
 
   document.getElementById('successClose').addEventListener('click', function(){ closeModal('successModal'); });
 
-  document.getElementById('copyAccount').addEventListener('click', async function(){
-    var text = document.getElementById('depositAccountText').textContent.trim();
-    var btn = this;
-    var original = btn.textContent;
-    try{
-      await navigator.clipboard.writeText(text);
-      btn.textContent = '복사됨';
-    }catch(e){
-      btn.textContent = '복사 실패';
-    }
-    setTimeout(function(){ btn.textContent = original; }, 1500);
-  });
-
   // ---- admin gate ----
   document.getElementById('adminOpen').addEventListener('click', function(){
     document.getElementById('adminPw').value = '';
@@ -809,7 +788,6 @@
       document.getElementById('kakaoLinkInput').value = CONFIG.kakaoLink;
       document.getElementById('charVideoInput').value = CONFIG.charVideoUrl;
       document.getElementById('resultVideoInput').value = CONFIG.resultVideoUrl;
-      document.getElementById('depositInput').value = CONFIG.depositAccount;
       await renderLeads();
     }catch(e){
       alert('비밀번호가 올바르지 않습니다.');
@@ -900,8 +878,7 @@
       kakaoId: document.getElementById('kakaoIdInput').value.trim(),
       kakaoLink: document.getElementById('kakaoLinkInput').value.trim(),
       charVideoUrl: document.getElementById('charVideoInput').value.trim(),
-      resultVideoUrl: document.getElementById('resultVideoInput').value.trim(),
-      depositAccount: document.getElementById('depositInput').value.trim()
+      resultVideoUrl: document.getElementById('resultVideoInput').value.trim()
     };
     try{
       await setDoc(SETTINGS_DOC, newConfig, { merge: true });
@@ -909,7 +886,6 @@
       CONFIG.kakaoLink = newConfig.kakaoLink;
       CONFIG.charVideoUrl = newConfig.charVideoUrl;
       CONFIG.resultVideoUrl = newConfig.resultVideoUrl;
-      CONFIG.depositAccount = newConfig.depositAccount;
       applyPublicConfig();
       btn.textContent = '저장됨';
     }catch(e){
