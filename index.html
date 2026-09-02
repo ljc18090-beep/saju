@@ -578,10 +578,10 @@
         <input type="url" id="kakaoLinkInput" placeholder="https://open.kakao.com/o/xxxxxxx">
       </label>
       <label class="admin-settings-label">캐릭터 소개 영상 URL (통계-후기 사이 섹션)
-        <input type="text" id="charVideoInput" placeholder="영상 파일명 (예: character.mp4) 또는 전체 URL">
+        <input type="text" id="charVideoInput" placeholder="비워두면 /character.mp4 사용">
       </label>
       <label class="admin-settings-label">신청 완료 후 재생 영상 URL
-        <input type="text" id="resultVideoInput" placeholder="영상 파일명 (예: result.mp4) 또는 전체 URL">
+        <input type="text" id="resultVideoInput" placeholder="비워두면 /result.mp4 사용">
       </label>
       <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
     </div>
@@ -624,7 +624,6 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   // ===== Firebase 설정 =====
   var firebaseConfig = {
@@ -637,16 +636,15 @@
   };
   var firebaseApp = initializeApp(firebaseConfig);
   var db = getFirestore(firebaseApp);
-  var auth = getAuth(firebaseApp);
-  var ADMIN_EMAIL = 'admin@gyeolmyeongdang.com'; // Firebase 콘솔 Authentication에서 이 이메일로 사용자를 만들어주세요
+  var ADMIN_PW = 'gmd0000'; // 관리자 페이지 비밀번호 (사이트 하단 "관리자" 버튼)
 
   // ===== 사이트 설정 — Firestore의 settings/site 문서에서 불러옵니다 (관리자 페이지에서 수정) =====
   var SETTINGS_DOC = doc(db, 'settings', 'site');
   var CONFIG = {
     kakaoId: '',
     kakaoLink: '',
-    charVideoUrl: '',
-    resultVideoUrl: ''
+    charVideoUrl: '/character.mp4',   // 기본값: 저장소 루트의 character.mp4를 그대로 사용
+    resultVideoUrl: '/result.mp4'     // 기본값: 저장소 루트의 result.mp4를 그대로 사용
   };
 
   async function loadConfig(){
@@ -654,10 +652,10 @@
       var snap = await getDoc(SETTINGS_DOC);
       if(snap.exists()){
         var data = snap.data();
-        CONFIG.kakaoId = data.kakaoId || '';
-        CONFIG.kakaoLink = data.kakaoLink || '';
-        CONFIG.charVideoUrl = data.charVideoUrl || '';
-        CONFIG.resultVideoUrl = data.resultVideoUrl || '';
+        if(data.kakaoId) CONFIG.kakaoId = data.kakaoId;
+        if(data.kakaoLink) CONFIG.kakaoLink = data.kakaoLink;
+        if(data.charVideoUrl) CONFIG.charVideoUrl = data.charVideoUrl;
+        if(data.resultVideoUrl) CONFIG.resultVideoUrl = data.resultVideoUrl;
       }
     }catch(e){ console.error('설정 불러오기 실패', e); }
     applyPublicConfig();
@@ -776,23 +774,19 @@
   document.getElementById('adminSubmit').addEventListener('click', checkAdminPw);
   document.getElementById('adminPw').addEventListener('keydown', function(e){ if(e.key==='Enter') checkAdminPw(); });
 
-  async function checkAdminPw(){
+  function checkAdminPw(){
     var val = document.getElementById('adminPw').value;
-    var submitBtn = document.getElementById('adminSubmit');
-    submitBtn.disabled = true;
-    try{
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, val);
+    if(val === ADMIN_PW){
       closeModal('adminGate');
       openModal('adminPanel');
       document.getElementById('kakaoIdInput').value = CONFIG.kakaoId;
       document.getElementById('kakaoLinkInput').value = CONFIG.kakaoLink;
       document.getElementById('charVideoInput').value = CONFIG.charVideoUrl;
       document.getElementById('resultVideoInput').value = CONFIG.resultVideoUrl;
-      await renderLeads();
-    }catch(e){
+      renderLeads();
+    } else {
       alert('비밀번호가 올바르지 않습니다.');
     }
-    submitBtn.disabled = false;
   }
   document.getElementById('adminClose').addEventListener('click', function(){ closeModal('adminPanel'); });
 
