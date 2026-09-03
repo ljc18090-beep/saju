@@ -538,6 +538,29 @@
           </label>
         </div>
 
+        <div class="form-row" id="partnerInfoRow" style="display:none;">
+          <label>상대방 생년월일
+            <input type="date" name="partnerBirthdate">
+          </label>
+          <label>상대방 태어난 시간 (시진)
+            <select name="partnerBirthtime">
+              <option value="모름">모름 (시간 모름)</option>
+              <option>자시 (23:30~01:29)</option>
+              <option>축시 (01:30~03:29)</option>
+              <option>인시 (03:30~05:29)</option>
+              <option>묘시 (05:30~07:29)</option>
+              <option>진시 (07:30~09:29)</option>
+              <option>사시 (09:30~11:29)</option>
+              <option>오시 (11:30~13:29)</option>
+              <option>미시 (13:30~15:29)</option>
+              <option>신시 (15:30~17:29)</option>
+              <option>유시 (17:30~19:29)</option>
+              <option>술시 (19:30~21:29)</option>
+              <option>해시 (21:30~23:29)</option>
+            </select>
+          </label>
+        </div>
+
         <div class="form-row" style="grid-template-columns:1fr;">
           <label>남기고 싶은 말 (선택)
             <textarea name="memo" rows="3" placeholder="구체적으로 남겨주시면 상담에 도움이 됩니다"></textarea>
@@ -725,7 +748,7 @@
       <div class="lead-table-wrap">
         <table class="lead-table" id="leadTable">
           <thead><tr>
-            <th>접수일시</th><th>이름</th><th>연락처</th><th>성별</th><th>생년월일</th><th>시간</th><th>궁금한 것</th><th>메모</th><th></th>
+            <th>접수일시</th><th>이름</th><th>연락처</th><th>성별</th><th>생년월일</th><th>시간</th><th>궁금한 것</th><th>상대방 정보(재회운)</th><th>메모</th><th></th>
           </tr></thead>
           <tbody id="leadTbody"></tbody>
         </table>
@@ -769,7 +792,7 @@
   };
   var firebaseApp = initializeApp(firebaseConfig);
   var db = getFirestore(firebaseApp);
-  var ADMIN_PW = 'gmd0000'; // 관리자 페이지 비밀번호 (사이트 하단 "관리자" 버튼)
+  var ADMIN_PW_HASH = 'e836b3487bc9c48f860b0cb6d95a9078cf8d3ff2d2d2a84c409621759937ccdf'; // 관리자 페이지 비밀번호의 SHA-256 해시 (사이트 하단 "관리자" 버튼) — 원문은 소스에 남기지 않습니다
 
   // ===== 사이트 설정 — Firestore의 settings/site 문서에서 불러옵니다 (관리자 페이지에서 수정) =====
   var SETTINGS_DOC = doc(db, 'settings', 'site');
@@ -1017,6 +1040,20 @@
     });
   });
 
+  // 재회운을 고르면 상대방 생년월일/시간 입력란이 나타나도록
+  var partnerInfoRow = document.getElementById('partnerInfoRow');
+  var topicSelect = form.querySelector('select[name="topic"]');
+  function togglePartnerInfoRow(){
+    var isReunion = topicSelect.value === '재회운';
+    partnerInfoRow.style.display = isReunion ? '' : 'none';
+    if(!isReunion){
+      form.querySelector('input[name="partnerBirthdate"]').value = '';
+      form.querySelector('select[name="partnerBirthtime"]').value = '모름';
+    }
+  }
+  topicSelect.addEventListener('change', togglePartnerInfoRow);
+  togglePartnerInfoRow();
+
   form.addEventListener('submit', async function(ev){
     ev.preventDefault();
     var fd = new FormData(form);
@@ -1032,6 +1069,8 @@
       birthdate: fd.get('birthdate') || '',
       birthtime: fd.get('birthtime') || '',
       topic: fd.get('topic') || '',
+      partnerBirthdate: fd.get('topic') === '재회운' ? (fd.get('partnerBirthdate') || '') : '',
+      partnerBirthtime: fd.get('topic') === '재회운' ? (fd.get('partnerBirthtime') || '') : '',
       memo: fd.get('memo') || ''
     };
     var btn = form.querySelector('.btn-submit');
@@ -1042,6 +1081,7 @@
       await addDoc(collection(db, 'leads'), lead);
       btn.disabled = false; btn.textContent = originalLabel;
       form.reset();
+      togglePartnerInfoRow();
       prepareResultModal();
       openModal('successModal');
     }catch(e){
@@ -1066,9 +1106,16 @@
   document.getElementById('adminSubmit').addEventListener('click', checkAdminPw);
   document.getElementById('adminPw').addEventListener('keydown', function(e){ if(e.key==='Enter') checkAdminPw(); });
 
-  function checkAdminPw(){
+  async function sha256Hex(text){
+    var data = new TextEncoder().encode(text);
+    var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  }
+
+  async function checkAdminPw(){
     var val = document.getElementById('adminPw').value;
-    if(val === ADMIN_PW){
+    var hash = await sha256Hex(val);
+    if(hash === ADMIN_PW_HASH){
       closeModal('adminGate');
       openModal('adminPanel');
       document.getElementById('kakaoIdInput').value = CONFIG.kakaoId;
@@ -1104,7 +1151,7 @@
   async function renderLeads(){
     var tbody = document.getElementById('leadTbody');
     var emptyNote = document.getElementById('emptyNote');
-    tbody.innerHTML = '<tr><td colspan="9" style="color:#8a8272;">불러오는 중...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="color:#8a8272;">불러오는 중...</td></tr>';
     emptyNote.style.display = 'none';
     try{
       var q = query(collection(db, 'leads'), orderBy('submittedAt', 'desc'));
@@ -1126,6 +1173,7 @@
           '<td>'+escapeHtml(lead.calendar||'')+' '+escapeHtml(lead.birthdate||'')+'</td>'+
           '<td>'+escapeHtml(lead.birthtime||'')+'</td>'+
           '<td>'+escapeHtml(lead.topic||'')+'</td>'+
+          '<td>'+escapeHtml([lead.partnerBirthdate, lead.partnerBirthtime].filter(Boolean).join(' / '))+'</td>'+
           '<td>'+escapeHtml(lead.memo||'')+'</td>'+
           '<td><button class="row-del" data-id="'+lead.id+'">삭제</button></td>';
         tbody.appendChild(tr);
@@ -1140,7 +1188,7 @@
       });
     }catch(e){
       console.error('리드 불러오기 실패', e);
-      tbody.innerHTML = '<tr><td colspan="9" style="color:#8a8272;">불러오기 실패 — Firestore 규칙(leads read 권한)을 확인해주세요.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="10" style="color:#8a8272;">불러오기 실패 — Firestore 규칙(leads read 권한)을 확인해주세요.</td></tr>';
     }
   }
 
@@ -1155,9 +1203,9 @@
 
   document.getElementById('exportCsv').addEventListener('click', function(){
     if(!currentLeads.length){ alert('내보낼 데이터가 없습니다.'); return; }
-    var headers = ['접수일시','이름','연락처','성별','달력','생년월일','태어난시간','궁금한것','메모'];
+    var headers = ['접수일시','이름','연락처','성별','달력','생년월일','태어난시간','궁금한것','상대방생년월일','상대방태어난시간','메모'];
     var rows = currentLeads.map(function(l){
-      return [l.submittedAtText,l.name,l.contact,l.gender,l.calendar,l.birthdate,l.birthtime,l.topic,l.memo]
+      return [l.submittedAtText,l.name,l.contact,l.gender,l.calendar,l.birthdate,l.birthtime,l.topic,l.partnerBirthdate,l.partnerBirthtime,l.memo]
         .map(function(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }).join(',');
     });
     var csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
