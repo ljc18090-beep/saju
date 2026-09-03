@@ -247,6 +247,7 @@
   .modal{
     background:var(--paper); border-radius:8px; padding:1.8rem; max-width:380px; width:100%;
     text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    max-height:88vh; max-height:88dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;
   }
   .modal h3{font-size:1.15rem; margin-bottom:0.9rem;}
   .modal p{font-size:0.9rem; color:#4b453a; margin-bottom:1.2rem;}
@@ -254,7 +255,16 @@
     width:100%; padding:0.7rem 0.8rem; border:1px solid var(--paper-line); border-radius:4px; margin-bottom:1rem;
   }
   .modal-actions{display:flex; gap:0.6rem; justify-content:center; margin-bottom:0.4rem;}
-  .modal-wide{max-width:960px; text-align:left;}
+  .modal-wide{max-width:960px; text-align:left; max-height:88vh; max-height:88dvh; display:flex; flex-direction:column;}
+  .modal-wide .modal-head{flex:0 0 auto;}
+  .modal-body-scroll{flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-right:0.2rem;}
+  .admin-tabs{flex:0 0 auto; display:flex; gap:0.3rem; margin-bottom:1rem; border-bottom:1px solid var(--paper-line); overflow-x:auto;}
+  .admin-tab-btn{
+    padding:0.65rem 1rem; background:none; border:none; border-bottom:2px solid transparent;
+    font-weight:700; font-size:0.92rem; color:#8a8272; cursor:pointer; white-space:nowrap; font-family:inherit;
+  }
+  .admin-tab-btn.active{color:#332e24; border-bottom-color:var(--gold);}
+  .admin-tab-panel.hidden{display:none;}
   .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;}
   .modal-wide .modal-actions{justify-content:flex-start; margin-bottom:1rem;}
   /* CHARACTER VIDEO */
@@ -591,126 +601,136 @@
       <h3>관리자</h3>
       <button id="adminClose" class="btn btn-ghost">닫기</button>
     </div>
-    <div class="admin-settings">
-      <p class="admin-settings-title">사이트 설정</p>
-      <label class="admin-settings-label">카카오톡 상담 아이디 (하단 문의처에 표시)
-        <input type="text" id="kakaoIdInput" placeholder="카카오톡 아이디">
-      </label>
-      <label class="admin-settings-label">카카오톡 오픈채팅 링크 (접수 완료 화면 버튼)
-        <input type="url" id="kakaoLinkInput" placeholder="https://open.kakao.com/o/xxxxxxx">
-      </label>
-      <label class="admin-settings-label">캐릭터 소개 영상 URL (통계-후기 사이 섹션)
-        <input type="text" id="charVideoInput" placeholder="비워두면 /character.mp4 사용">
-      </label>
-      <label class="admin-settings-label">신청 완료 후 재생 영상 URL
-        <input type="text" id="resultVideoInput" placeholder="비워두면 /result.mp4 사용">
-      </label>
-      <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
+
+    <div class="admin-tabs">
+      <button type="button" class="admin-tab-btn active" data-admin-tab="settings">홈페이지 정보 수정</button>
+      <button type="button" class="admin-tab-btn" data-admin-tab="leads">의뢰인 리스트 (<span id="leadCountTab">0</span>)</button>
     </div>
 
-    <p class="admin-settings-title">홈페이지 문구</p>
+    <div class="admin-tab-panel modal-body-scroll" id="adminTabSettings">
+      <div class="admin-settings">
+        <p class="admin-settings-title">사이트 설정</p>
+        <label class="admin-settings-label">카카오톡 상담 아이디 (하단 문의처에 표시)
+          <input type="text" id="kakaoIdInput" placeholder="카카오톡 아이디">
+        </label>
+        <label class="admin-settings-label">카카오톡 오픈채팅 링크 (접수 완료 화면 버튼)
+          <input type="url" id="kakaoLinkInput" placeholder="https://open.kakao.com/o/xxxxxxx">
+        </label>
+        <label class="admin-settings-label">캐릭터 소개 영상 URL (통계-후기 사이 섹션)
+          <input type="text" id="charVideoInput" placeholder="비워두면 /character.mp4 사용">
+        </label>
+        <label class="admin-settings-label">신청 완료 후 재생 영상 URL
+          <input type="text" id="resultVideoInput" placeholder="비워두면 /result.mp4 사용">
+        </label>
+        <button id="saveSettings" class="btn btn-secondary">설정 저장</button>
+      </div>
 
-    <details class="content-group">
-      <summary>상단 메뉴</summary>
-      <label class="admin-settings-label">로고 이름<input type="text" id="navBrandInput"></label>
-      <label class="admin-settings-label">메뉴1 (이런 순간)<input type="text" id="navLink1Input"></label>
-      <label class="admin-settings-label">메뉴2 (역술가 소개)<input type="text" id="navLink2Input"></label>
-      <label class="admin-settings-label">메뉴3 (후기)<input type="text" id="navLink3Input"></label>
-      <label class="admin-settings-label">메뉴4 (FAQ)<input type="text" id="navLink4Input"></label>
-      <label class="admin-settings-label">상단 버튼<input type="text" id="navCtaInput"></label>
-    </details>
+      <p class="admin-settings-title">홈페이지 문구</p>
 
-    <details class="content-group">
-      <summary>히어로 (첫 화면)</summary>
-      <label class="admin-settings-label">작은 라벨<input type="text" id="heroEyebrowInput"></label>
-      <label class="admin-settings-label">큰 제목 (줄바꿈은 Enter로)<textarea id="heroTitleInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">설명 문구 (줄바꿈은 Enter로)<textarea id="heroSubInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">버튼 문구<input type="text" id="heroCtaInput"></label>
-      <label class="admin-settings-label">버튼 아래 작은 문구<input type="text" id="heroNoteInput"></label>
-      <label class="admin-settings-label">사주팔자 설명 캡션<input type="text" id="pillarsCaptionInput"></label>
-    </details>
+      <details class="content-group">
+        <summary>상단 메뉴</summary>
+        <label class="admin-settings-label">로고 이름<input type="text" id="navBrandInput"></label>
+        <label class="admin-settings-label">메뉴1 (이런 순간)<input type="text" id="navLink1Input"></label>
+        <label class="admin-settings-label">메뉴2 (역술가 소개)<input type="text" id="navLink2Input"></label>
+        <label class="admin-settings-label">메뉴3 (후기)<input type="text" id="navLink3Input"></label>
+        <label class="admin-settings-label">메뉴4 (FAQ)<input type="text" id="navLink4Input"></label>
+        <label class="admin-settings-label">상단 버튼<input type="text" id="navCtaInput"></label>
+      </details>
 
-    <details class="content-group">
-      <summary>이런 순간, 사주가 방향을 알려줍니다</summary>
-      <label class="admin-settings-label">섹션 제목<input type="text" id="momentsTitleInput"></label>
-      <label class="admin-settings-label">카드1 제목<input type="text" id="moment1TitleInput"></label>
-      <label class="admin-settings-label">카드1 설명<input type="text" id="moment1DescInput"></label>
-      <label class="admin-settings-label">카드2 제목<input type="text" id="moment2TitleInput"></label>
-      <label class="admin-settings-label">카드2 설명<input type="text" id="moment2DescInput"></label>
-      <label class="admin-settings-label">카드3 제목<input type="text" id="moment3TitleInput"></label>
-      <label class="admin-settings-label">카드3 설명<input type="text" id="moment3DescInput"></label>
-      <label class="admin-settings-label">카드4 제목<input type="text" id="moment4TitleInput"></label>
-      <label class="admin-settings-label">카드4 설명<input type="text" id="moment4DescInput"></label>
-    </details>
+      <details class="content-group">
+        <summary>히어로 (첫 화면)</summary>
+        <label class="admin-settings-label">작은 라벨<input type="text" id="heroEyebrowInput"></label>
+        <label class="admin-settings-label">큰 제목 (줄바꿈은 Enter로)<textarea id="heroTitleInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">설명 문구 (줄바꿈은 Enter로)<textarea id="heroSubInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">버튼 문구<input type="text" id="heroCtaInput"></label>
+        <label class="admin-settings-label">버튼 아래 작은 문구<input type="text" id="heroNoteInput"></label>
+        <label class="admin-settings-label">사주팔자 설명 캡션<input type="text" id="pillarsCaptionInput"></label>
+      </details>
 
-    <details class="content-group">
-      <summary>역술가 소개</summary>
-      <label class="admin-settings-label">작은 라벨<input type="text" id="expertEyebrowInput"></label>
-      <label class="admin-settings-label">이름/직함<input type="text" id="expertNameInput"></label>
-      <label class="admin-settings-label">소개 문구<textarea id="expertBioInput" rows="3"></textarea></label>
-      <label class="admin-settings-label">통계1 숫자<input type="text" id="stat1NumInput"></label>
-      <label class="admin-settings-label">통계1 라벨<input type="text" id="stat1LabelInput"></label>
-      <label class="admin-settings-label">통계2 숫자<input type="text" id="stat2NumInput"></label>
-      <label class="admin-settings-label">통계2 라벨<input type="text" id="stat2LabelInput"></label>
-    </details>
+      <details class="content-group">
+        <summary>이런 순간, 사주가 방향을 알려줍니다</summary>
+        <label class="admin-settings-label">섹션 제목<input type="text" id="momentsTitleInput"></label>
+        <label class="admin-settings-label">카드1 제목<input type="text" id="moment1TitleInput"></label>
+        <label class="admin-settings-label">카드1 설명<input type="text" id="moment1DescInput"></label>
+        <label class="admin-settings-label">카드2 제목<input type="text" id="moment2TitleInput"></label>
+        <label class="admin-settings-label">카드2 설명<input type="text" id="moment2DescInput"></label>
+        <label class="admin-settings-label">카드3 제목<input type="text" id="moment3TitleInput"></label>
+        <label class="admin-settings-label">카드3 설명<input type="text" id="moment3DescInput"></label>
+        <label class="admin-settings-label">카드4 제목<input type="text" id="moment4TitleInput"></label>
+        <label class="admin-settings-label">카드4 설명<input type="text" id="moment4DescInput"></label>
+      </details>
 
-    <details class="content-group">
-      <summary>후기</summary>
-      <label class="admin-settings-label">섹션 제목<input type="text" id="reviewsTitleInput"></label>
-      <label class="admin-settings-label">후기1 내용<textarea id="review1TextInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">후기1 작성자<input type="text" id="review1NameInput"></label>
-      <label class="admin-settings-label">후기2 내용<textarea id="review2TextInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">후기2 작성자<input type="text" id="review2NameInput"></label>
-      <label class="admin-settings-label">후기3 내용<textarea id="review3TextInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">후기3 작성자<input type="text" id="review3NameInput"></label>
-    </details>
+      <details class="content-group">
+        <summary>역술가 소개</summary>
+        <label class="admin-settings-label">작은 라벨<input type="text" id="expertEyebrowInput"></label>
+        <label class="admin-settings-label">이름/직함<input type="text" id="expertNameInput"></label>
+        <label class="admin-settings-label">소개 문구<textarea id="expertBioInput" rows="3"></textarea></label>
+        <label class="admin-settings-label">통계1 숫자<input type="text" id="stat1NumInput"></label>
+        <label class="admin-settings-label">통계1 라벨<input type="text" id="stat1LabelInput"></label>
+        <label class="admin-settings-label">통계2 숫자<input type="text" id="stat2NumInput"></label>
+        <label class="admin-settings-label">통계2 라벨<input type="text" id="stat2LabelInput"></label>
+      </details>
 
-    <details class="content-group">
-      <summary>사주단자 작성 (신청 폼 상단)</summary>
-      <label class="admin-settings-label">작은 라벨<input type="text" id="applyEyebrowInput"></label>
-      <label class="admin-settings-label">제목<input type="text" id="applyTitleInput"></label>
-      <label class="admin-settings-label">설명 문구<textarea id="applySubInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">개인정보 동의 문구<textarea id="agreeTextInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">제출 버튼 문구<input type="text" id="submitBtnTextInput"></label>
-    </details>
+      <details class="content-group">
+        <summary>후기</summary>
+        <label class="admin-settings-label">섹션 제목<input type="text" id="reviewsTitleInput"></label>
+        <label class="admin-settings-label">후기1 내용<textarea id="review1TextInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">후기1 작성자<input type="text" id="review1NameInput"></label>
+        <label class="admin-settings-label">후기2 내용<textarea id="review2TextInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">후기2 작성자<input type="text" id="review2NameInput"></label>
+        <label class="admin-settings-label">후기3 내용<textarea id="review3TextInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">후기3 작성자<input type="text" id="review3NameInput"></label>
+      </details>
 
-    <details class="content-group">
-      <summary>FAQ</summary>
-      <label class="admin-settings-label">섹션 제목<input type="text" id="faqTitleInput"></label>
-      <label class="admin-settings-label">질문1<input type="text" id="faq1QInput"></label>
-      <label class="admin-settings-label">답변1<textarea id="faq1AInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">질문2<input type="text" id="faq2QInput"></label>
-      <label class="admin-settings-label">답변2<textarea id="faq2AInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">질문3<input type="text" id="faq3QInput"></label>
-      <label class="admin-settings-label">답변3<textarea id="faq3AInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">질문4<input type="text" id="faq4QInput"></label>
-      <label class="admin-settings-label">답변4<textarea id="faq4AInput" rows="2"></textarea></label>
-    </details>
+      <details class="content-group">
+        <summary>사주단자 작성 (신청 폼 상단)</summary>
+        <label class="admin-settings-label">작은 라벨<input type="text" id="applyEyebrowInput"></label>
+        <label class="admin-settings-label">제목<input type="text" id="applyTitleInput"></label>
+        <label class="admin-settings-label">설명 문구<textarea id="applySubInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">개인정보 동의 문구<textarea id="agreeTextInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">제출 버튼 문구<input type="text" id="submitBtnTextInput"></label>
+      </details>
 
-    <details class="content-group">
-      <summary>푸터 · 접수 완료 화면</summary>
-      <label class="admin-settings-label">푸터 상호명<input type="text" id="footerBrandInput"></label>
-      <label class="admin-settings-label">푸터 영업시간<input type="text" id="footerHoursInput"></label>
-      <label class="admin-settings-label">푸터 안내 문구<textarea id="footerFineInput" rows="2"></textarea></label>
-      <label class="admin-settings-label">접수 완료 제목<input type="text" id="successTitleInput"></label>
-      <label class="admin-settings-label">카카오 버튼 문구<input type="text" id="kakaoBtnLabelInput"></label>
-    </details>
+      <details class="content-group">
+        <summary>FAQ</summary>
+        <label class="admin-settings-label">섹션 제목<input type="text" id="faqTitleInput"></label>
+        <label class="admin-settings-label">질문1<input type="text" id="faq1QInput"></label>
+        <label class="admin-settings-label">답변1<textarea id="faq1AInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">질문2<input type="text" id="faq2QInput"></label>
+        <label class="admin-settings-label">답변2<textarea id="faq2AInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">질문3<input type="text" id="faq3QInput"></label>
+        <label class="admin-settings-label">답변3<textarea id="faq3AInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">질문4<input type="text" id="faq4QInput"></label>
+        <label class="admin-settings-label">답변4<textarea id="faq4AInput" rows="2"></textarea></label>
+      </details>
 
-    <button id="saveContent" class="btn btn-secondary" style="margin-bottom:1.4rem;">문구 저장</button>
+      <details class="content-group">
+        <summary>푸터 · 접수 완료 화면</summary>
+        <label class="admin-settings-label">푸터 상호명<input type="text" id="footerBrandInput"></label>
+        <label class="admin-settings-label">푸터 영업시간<input type="text" id="footerHoursInput"></label>
+        <label class="admin-settings-label">푸터 안내 문구<textarea id="footerFineInput" rows="2"></textarea></label>
+        <label class="admin-settings-label">접수 완료 제목<input type="text" id="successTitleInput"></label>
+        <label class="admin-settings-label">카카오 버튼 문구<input type="text" id="kakaoBtnLabelInput"></label>
+      </details>
 
-    <h3 style="margin-bottom:0.8rem;">접수된 사주단자 (<span id="leadCount">0</span>건)</h3>
-    <div class="modal-actions">
-      <button id="exportCsv" class="btn btn-secondary">CSV로 내보내기</button>
-      <button id="clearAll" class="btn btn-danger">전체 삭제</button>
+      <button id="saveContent" class="btn btn-secondary" style="margin-bottom:1.4rem;">문구 저장</button>
     </div>
-    <div class="lead-table-wrap">
-      <table class="lead-table" id="leadTable">
-        <thead><tr>
-          <th>접수일시</th><th>이름</th><th>연락처</th><th>성별</th><th>생년월일</th><th>시간</th><th>궁금한 것</th><th>메모</th><th></th>
-        </tr></thead>
-        <tbody id="leadTbody"></tbody>
-      </table>
-      <p class="empty-note" id="emptyNote" style="display:none;">아직 접수된 사주단자가 없습니다.</p>
+
+    <div class="admin-tab-panel modal-body-scroll hidden" id="adminTabLeads">
+      <h3 style="margin-bottom:0.8rem;">접수된 사주단자 (<span id="leadCount">0</span>건)</h3>
+      <div class="modal-actions">
+        <button id="exportCsv" class="btn btn-secondary">CSV로 내보내기</button>
+        <button id="clearAll" class="btn btn-danger">전체 삭제</button>
+      </div>
+      <div class="lead-table-wrap">
+        <table class="lead-table" id="leadTable">
+          <thead><tr>
+            <th>접수일시</th><th>이름</th><th>연락처</th><th>성별</th><th>생년월일</th><th>시간</th><th>궁금한 것</th><th>메모</th><th></th>
+          </tr></thead>
+          <tbody id="leadTbody"></tbody>
+        </table>
+        <p class="empty-note" id="emptyNote" style="display:none;">아직 접수된 사주단자가 없습니다.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -1063,6 +1083,16 @@
   }
   document.getElementById('adminClose').addEventListener('click', function(){ closeModal('adminPanel'); });
 
+  // 관리자 패널 탭 전환 (홈페이지 정보 수정 / 의뢰인 리스트)
+  document.querySelectorAll('.admin-tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-admin-tab');
+      document.querySelectorAll('.admin-tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+      document.getElementById('adminTabSettings').classList.toggle('hidden', target!=='settings');
+      document.getElementById('adminTabLeads').classList.toggle('hidden', target!=='leads');
+    });
+  });
+
   var currentLeads = [];
 
   function escapeHtml(str){
@@ -1083,6 +1113,8 @@
       snap.forEach(function(d){ currentLeads.push(Object.assign({ id: d.id }, d.data())); });
       tbody.innerHTML = '';
       document.getElementById('leadCount').textContent = currentLeads.length;
+      var leadCountTabEl = document.getElementById('leadCountTab');
+      if(leadCountTabEl) leadCountTabEl.textContent = currentLeads.length;
       emptyNote.style.display = currentLeads.length ? 'none' : 'block';
       currentLeads.forEach(function(lead){
         var tr = document.createElement('tr');
